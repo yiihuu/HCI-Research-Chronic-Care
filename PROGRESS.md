@@ -13,7 +13,7 @@
   </thead>
   <tbody>
     <tr>
-      <td rowspan="4" style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
+      <td rowspan="5" style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
       <td>搭建仓库框架：README（双语 HCI 研究总览）+ docs/ 四章节骨架 + PROGRESS/DEVLOG。</td>
     </tr>
     <tr>
@@ -24,6 +24,9 @@
     </tr>
     <tr>
       <td>预填 Related Work 主题轴线与 References 起始文献清单（来自本地 <code>论文相关/</code>）。</td>
+    </tr>
+    <tr>
+      <td><b>公开发布 / Published</b>：仓库定名 <code>HCI-Research-Chronic-Care</code>（Public），已推送至 <a href="https://github.com/yiihuu/HCI-Research-Chronic-Care">github.com/yiihuu/HCI-Research-Chronic-Care</a>；<code>private/</code> 已验证未上传。</td>
     </tr>
   </tbody>
 </table>

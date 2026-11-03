@@ -12,6 +12,8 @@
 
 📈 **进展 / Progress** → [PROGRESS.md](./PROGRESS.md) · 📓 开发日志 / Devlog → [DEVLOG.md](./DEVLOG.md) · 📂 研究章节 / Docs → [docs/](./docs/)
 
+🔗 **仓库 / Repository** → https://github.com/yiihuu/HCI-Research-Chronic-Care
+
 ---
 
 ## 研究问题 · Research Questions
@@ -78,7 +80,7 @@
 ## 仓库结构 · Repository Structure
 
 ```
-ms-sensemaking-dashboard/
+HCI-Research-Chronic-Care/
 ├── README.md              # 本研究总览（双语 + HCI 框架）
 ├── PROGRESS.md            # 对外进展里程碑
 ├── DEVLOG.md              # 逐日公开开发/研究日志

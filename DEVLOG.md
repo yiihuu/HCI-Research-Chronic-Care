@@ -10,4 +10,6 @@
 - **文献预填 / References seed**：从本地 `论文相关/` 提取 CHI 文献标题，预填 `related-work.md` 五条主题轴线与 `references.md` 起始清单。
 - **下一步 / Next**：手写充实 docs 四章节（每次给导师汇报的内容）；推进 IRB 与预访谈。
 - **已知 / Known**：仓库位于 OneDrive 同步目录（`newresearch/`）。为避免 `.git` 与 OneDrive 实时同步冲突，**请勿在多台设备同时打开编辑**；大文件（录音/转录）走 `analysis/raw/`、`analysis/transcripts/`（已 gitignore）或外部存储，勿直接入库。
-- **待决 / Open**：GitHub 仓库名 `ms-sensemaking-dashboard` 是否定稿；推送由维护者用本人账号执行（本机未装 `gh`，无推送凭证）。
+- **已发布 / Published**：仓库定名为 `HCI-Research-Chronic-Care`（Public），已推送至 https://github.com/yiihuu/HCI-Research-Chronic-Care 。`private/` 经 GitHub API 验证确认未上传。
+- **工具链备注 / Toolchain**：本机未独立安装 Git for Windows，git 由 WorkBuddy 自带 PortableGit 提供（`D:\002AI\workbuddy\resources\vendor\PortableGit\`），故无独立「Git Bash」窗口；GitHub 凭据由系统级 GCM（credential.helper=manager）缓存，日常 `git push` 可直接用。
+- **待决 / Open**：仓库名与首版框架已定稿；后续专注手写 docs/ 四章节。
