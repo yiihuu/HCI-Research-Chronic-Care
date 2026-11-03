@@ -39,6 +39,10 @@
       <td style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
       <td><b>方法论概念梳理 / Methods concept notes</b>：新增 <code>note/</code> 与 <code>资料/</code> 两个顶层文件夹；<code>note/concepts.md</code> 系统梳理 RTD、概念验证（发明型研究三部分 / 健壮性层级）、研究设计分组（技术评估 / 受控实验 / 专家评审 / 田野部署）、数据收集方法（半结构化访谈 / 刺激性回忆 / 标准化问卷 / ESM+日志 / 视频观察），并映射到本课题；11 张讲义截图存入 <code>note/assets/</code>。<br><b>Methods concept notes</b>: added two top-level folders <code>note/</code> and <code>资料/</code>; <code>note/concepts.md</code> systematically organizes RTD, proof of concept (three parts of inventive research / robustness levels), study-design groups (technical evaluation / controlled experiment / expert review / field deployment), and data-collection methods (semi-structured interviews / stimulated recall / standardised questionnaires / ESM+logging / video observation), mapped onto this project; 11 lecture screenshots stored under <code>note/assets/</code>.</td>
     </tr>
+    <tr>
+      <td style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
+      <td><b>收回研究正文 / Content rollback</b>：按用户要求，把此前我在 README 与 docs/{system-design,methods,related-work,references} 以及 docs/poster/manuscript 中替用户写的研究正文（RQ 措辞、背景论证、问题陈述、贡献、讨论、结论、设计目标论述等）全部收回，仅保留标题/框架/链接/结构树/文档约定 + 每处 1~2 句方向 + <code>📝 TODO</code>。<code>note/</code> 概念笔记（讲义学习笔记）保留不动。<br><b>Content rollback</b>: per the user's request, rolled back all research prose I had written on their behalf in README and docs/{system-design,methods,related-work,references} and docs/poster/manuscript (RQ wording, background argument, problem statement, contributions, discussion, conclusion, design-goal justification, etc.) — keeping only headings/framework/links/structure-tree/doc-convention plus a 1–2 sentence direction and <code>📝 TODO</code> per spot. The <code>note/</code> concept notes (lecture study notes) were left intact.</td>
+    </tr>
   </tbody>
 </table>
 

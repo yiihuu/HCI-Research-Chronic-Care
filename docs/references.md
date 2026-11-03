@@ -1,10 +1,9 @@
 # 参考文献 · References
 
-> 起始清单：从本地 `论文相关/` 预填的文献标题（未审格式）。需你补全为统一引用格式（ACM / APA / BibTeX）并去重。
+> 起始清单来自本地 `论文相关/`；需你补全为统一引用格式（ACM / APA / BibTeX）并去重。
 > 状态：🔧 骨架清单，待整理。
 >
-> Starting list: paper titles pre-filled from the local `论文相关/` folder (formats not yet verified).
-> You need to complete them into a single consistent citation style (ACM / APA / BibTeX) and de-duplicate.
+> Starter list drawn from the local `论文相关/` folder; complete into a single citation style (ACM / APA / BibTeX) and de-duplicate.
 > Status: 🔧 scaffold list, to be organized.
 
 ---
@@ -12,46 +11,29 @@
 ## 一、CHI / 会议论文（来自 `论文相关/ReferenceFromCHI/`）
 ## I. CHI / Conference Papers (from `论文相关/ReferenceFromCHI/`)
 
-1. Between Control and Uncertainty: Understanding Self-Tracking Practices in Enigmatic Disease Management
-2. InterLeaf: A Letter-Based Mobile Platform for Reflection, Connection, and Chronic Pain Support
-3. "You Can See the Connections": Facilitating Visualization of Care Priorities in People Living with Multiple Chronic Health Conditions
-4. Talk2care *(待补全称与出处 / full title and venue to be completed)*
-5. Healthtale *(待补全称与出处 / full title and venue to be completed)*
-6. MIND *(待补全称与出处 / full title and venue to be completed)*
-7. MoreModality, MoreAI *(待补全称与出处 / full title and venue to be completed)*
-8. chronic pain *(待补确切题名与出处 / exact title and venue to be completed)*
-9. clinical path *(待补确切题名与出处 / exact title and venue to be completed)*
-10. co design customizable *(待补确切题名与出处 / exact title and venue to be completed)*
-11. tracking chi26c-sub4388-cam-i16 *(待补确切题名与出处 / exact title and venue to be completed)*
-12. unremarkable *(待补确切题名与出处 / exact title and venue to be completed)*
+- Between Control and Uncertainty: Understanding Self-Tracking Practices in Enigmatic Disease Management
+- InterLeaf: A Letter-Based Mobile Platform for Reflection, Connection, and Chronic Pain Support
+- "You Can See the Connections": Facilitating Visualization of Care Priorities in People Living with Multiple Chronic Health Conditions
+- chronic pain / clinical path / unremarkable（具体题名与出处待从 `论文相关/` 补全 / exact titles & venues to be completed from `论文相关/`）
 
 > 📝 TODO：逐条补全作者、会议/期刊、年份、DOI；用 Zotero / BibTeX 导出统一格式。
-> 📝 TODO: Complete author, venue/journal, year, and DOI for each entry; export a unified format via Zotero / BibTeX.
+> 📝 TODO: Complete author, venue, year, and DOI for each entry; export a unified format via Zotero / BibTeX.
 
-## 二、CMA 相关（来自 `论文相关/CMA/`）
-## II. CMA-related (from `论文相关/CMA/`)
+## 二、理论 / 前期（来自 `论文相关/之前的/`）
+## II. Theory / Prior Work (from `论文相关/之前的/`)
 
-13. CMA thesis *(待补题名/作者 / title and author to be completed)*
-14. XinTONG *(待补 / to be completed)*
-15. 会议论文 *(待补具体条目 / specific entries to be completed)*
-16. 外校的 *(待补具体条目 / specific entries to be completed)*
+- Before shared decision making（题名与出处待补 / title & venue to be completed）
 
-## 三、学位论文与格式（来自 `论文相关/个人毕业论文/`）
-## III. Thesis and Formatting (from `论文相关/个人毕业论文/`)
+## 三、方法学 · Methodology
 
-17. HKUST thesis（hkustthesis.pdf）— 本校论文格式模板，写作时参照。
-    HKUST thesis (hkustthesis.pdf) — the university's thesis formatting template, to be used as a reference while writing.
+- Braun, V., & Clarke, V. (2006). Using thematic analysis in psychology. *Qualitative Research in Psychology*.
+- Saldaña, J. (2016). *The Coding Manual for Qualitative Researchers*. SAGE.
 
-## 四、理论 / 前期（来自 `论文相关/之前的/`）
-## IV. Theory / Prior Work (from `论文相关/之前的/`)
+## 四、学位论文与格式（来自 `论文相关/个人毕业论文/`）
+## IV. Thesis and Formatting (from `论文相关/个人毕业论文/`)
 
-18. Before shared decision making *(待补确切题名与出处 / exact title and venue to be completed)*
-
-## 五、方法学（来自 `Analysis/`）
-## V. Methodology (from `Analysis/`)
-
-19. Braun, V., & Clarke, V. (2006). Using thematic analysis in psychology. *Qualitative Research in Psychology*.
-20. Saldaña, J. (2016). *The Coding Manual for Qualitative Researchers*. SAGE.
+- HKUST thesis（hkustthesis.pdf）— 本校论文格式模板，写作时参照。
+  HKUST thesis (hkustthesis.pdf) — the university's thesis formatting template, to be used as a reference while writing.
 
 ---
 
