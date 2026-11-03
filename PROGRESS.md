@@ -31,6 +31,10 @@
     <tr>
       <td><b>双语化 / Bilingual pass</b>：按约定为 README 之外的全部文档补齐英文对照（docs/ 四章节、PROGRESS、DEVLOG、analysis/README）。<br><b>Bilingual pass</b>: added English counterparts throughout every document except the README (the four docs/ chapters, PROGRESS, DEVLOG, analysis/README), following the standing bilingual convention.</td>
     </tr>
+    <tr>
+      <td style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
+      <td><b>研究转向 / Pivot</b>：从"医患协同意义建构 Dashboard（MS 案例）"重构为"患者端慢病自我管理 + 链接选择（link-selection）交互"，并泛化到一般慢性病（不再限定 MS）。重构 README 与 docs/{system-design,methods,related-work} 框架：RQ1 → 患者侧归因需求，RQ2 → 链接选择交互，related-work 轴线重排（SDM 降为背景脉络）。<br><b>Research pivot</b>: reframed from "clinician–patient collaborative-sensemaking dashboard (MS case)" to "patient-side chronic-disease self-management + link-selection interaction", generalized to chronic disease broadly (no longer MS-specific). Reframed the frameworks of README and docs/{system-design,methods,related-work}: RQ1 → patient-side attribution needs, RQ2 → link-selection interaction, related-work axes reordered (SDM demoted to background context).</td>
+    </tr>
   </tbody>
 </table>
 

@@ -10,8 +10,8 @@
 
 ## 1. 研究范式 · Research Paradigm
 
-- **设计导向的 HCI 研究（design-oriented HCI research）**：形成性研究（RQ1）→ 迭代设计（RQ2）→ 形成性评估。
-  **Design-oriented HCI research**: formative study (RQ1) → iterative design (RQ2) → formative evaluation.
+- **设计导向的 HCI 研究（design-oriented HCI research）**：形成性研究（RQ1，患者侧）→ 迭代设计（RQ2）→ 形成性评估。
+  **Design-oriented HCI research**: formative study (RQ1, patient-side) → iterative design (RQ2) → formative evaluation.
 - 质性为主（qualitative-dominant），以半结构化访谈 + 主题分析为主轴。
   Qualitative-dominant, with semi-structured interviews and thematic analysis as the backbone.
 
@@ -22,33 +22,33 @@
 
 | 维度 · Dimension | 设计 · Design |
 |---|---|
-| 研究对象 · Participants | 神经科医生（MS 随访场景）/ Neurologists in MS follow-up care |
+| 研究对象 · Participants | 慢性病患者（一般慢病，非单病种限定）/ People living with chronic disease (general chronic conditions, not condition-specific) |
 | 研究类型 · Study type | 形成性研究（formative study），探索性 / exploratory |
-| 数据来源 · Data sources | 半结构化访谈 +（可选）随访场景观察 / Semi-structured interviews + (optional) observation of follow-up visits |
+| 数据来源 · Data sources | 半结构化访谈 +（可选）自我管理实践观察 / Semi-structured interviews + (optional) observation of self-management practice |
 | 抽样策略 · Sampling | 目的性抽样（佟老师临床合作网络对接）/ Purposive sampling via the advisor's clinical network |
 
-> 📝 TODO（手写）：明确样本量预期、纳入/排除标准、是否含患者侧数据及顺序。
-> 📝 TODO (by hand): Specify the expected sample size, inclusion/exclusion criteria, and whether patient-side data is included and in what order.
+> 📝 TODO（手写）：明确样本量预期、纳入/排除标准（如确诊时长、是否正在自我管理）。
+> 📝 TODO (by hand): Specify the expected sample size and inclusion/exclusion criteria (e.g., duration since diagnosis, whether they currently self-manage).
 
 ## 3. 参与者与招募 · Participants & Recruitment
 
-- 招募渠道：通过导师（佟老师）潜在临床合作网络对接神经科医生。
-  Recruitment channel: neurologist outreach through the advisor's (Tong laoshi's) potential clinical collaboration network.
+- 招募渠道：通过导师（佟老师）潜在临床合作网络对接慢性病患者。
+  Recruitment channel: patient outreach through the advisor's (Tong laoshi's) potential clinical collaboration network.
 - 当前状态：**IRB 准备阶段**，正式招募需在伦理审查通过后启动。
   Current status: **IRB preparation**; formal recruitment can only start once ethics approval is granted.
 
-> 📝 TODO（手写）：填写招募话术要点、知情同意流程、报酬（如有）、预计招募人数。
-> 📝 TODO (by hand): Add key recruitment wording, the informed-consent flow, compensation (if any), and the expected number of recruits.
+> 📝 TODO（手写）：填写招募话术要点、知情同意流程、报酬（如有）、预计招募人数；注意招募语境聚焦"症状归因 / 自我管理"而非特定病种。
+> 📝 TODO (by hand): Add key recruitment wording, the informed-consent flow, compensation (if any), and the expected number of recruits; keep the recruitment framing focused on "symptom attribution / self-management" rather than a specific condition.
 
 ## 4. 数据收集 · Data Collection
 
-- 工具：半结构化访谈提纲（围绕"临床数据 vs 患者体验整合"的障碍）。
-  Instrument: a semi-structured interview guide centred on obstacles to integrating clinical data with patient experience.
+- 工具：半结构化访谈提纲（围绕"患者在自我管理中做症状归因 / 链接时的障碍、需求与心智模型"）。
+  Instrument: a semi-structured interview guide centred on the obstacles, needs, and mental models patients have when attributing symptoms or creating links during self-management.
 - 形式：一对一访谈，录音 + 转录；转录材料脱敏，不进公开仓库。
   Format: one-on-one interviews, recorded and transcribed; transcripts are de-identified and never enter the public repository.
 
-> 📝 TODO（手写）：贴出访谈提纲（可放 `private/` 或脱敏后放此处）；记录访谈时长、地点、媒介。
-> 📝 TODO (by hand): Paste the interview guide (in `private/`, or here once de-identified); record interview duration, setting, and medium.
+> 📝 TODO（手写）：贴出访谈提纲（可放 `private/` 或脱敏后放此处）；记录访谈时长、地点、媒介；可包含情境因子归类的探询（患者自然如何解释症状成因）。
+> 📝 TODO (by hand): Paste the interview guide (in `private/`, or here once de-identified); record interview duration, setting, and medium; consider probing how patients naturally explain symptom causes (to inform the context-factor taxonomy).
 
 ## 5. 数据分析 · Data Analysis
 
@@ -72,8 +72,8 @@ The six-phase framework is adopted:
 - 本仓库 `analysis/` 保留编码练习与（脱敏）示例。
   This repository's `analysis/` folder holds coding exercises and de-identified examples.
 
-> 📝 TODO（手写）：写明具体选用的编码类型与理由；给出 2–3 个编码示例（脱敏）。
-> 📝 TODO (by hand): Name the specific coding types used and justify them; give 2–3 de-identified coding examples.
+> 📝 TODO（手写）：写明具体选用的编码类型与理由；给出 2–3 个编码示例（脱敏），尤其关注"归因障碍""情境因子心智模型"类编码。
+> 📝 TODO (by hand): Name the specific coding types used and justify them; give 2–3 de-identified coding examples, especially around "attribution obstacles" and "context-factor mental models".
 
 ### 5.3 分析工具 · Analysis Tools
 
@@ -87,8 +87,8 @@ The six-phase framework is adopted:
 
 | 研究问题 · Research question | 数据 · Data | 分析方法 · Analysis | 预期产出 · Expected output |
 |---|---|---|---|
-| RQ1 整合障碍 / Integration obstacles | 医生访谈 / Clinician interviews | 主题分析 / Thematic analysis | 障碍主题 + 意义建构断层模型 / Obstacle themes + a sensemaking-gap model |
-| RQ2 设计（见 system-design）/ RQ2 design (see system-design) | 访谈发现 + 探针反馈 / Interview findings + probe feedback | 迭代式设计 + 形成性评估 / Iterative design + formative evaluation | 仪表盘设计决策 / Dashboard design decisions |
+| RQ1 归因障碍/需求 / Attribution obstacles & needs | 患者访谈 / Patient interviews | 主题分析 / Thematic analysis | 障碍主题 + 患者情境因子心智模型 / Obstacle themes + patients' context-factor mental models |
+| RQ2 设计（见 system-design）/ RQ2 design (see system-design) | 访谈发现 + 探针反馈 / Interview findings + probe feedback | 迭代式设计 + 形成性评估 / Iterative design + formative evaluation | 链接选择交互设计决策 / Link-selection interaction design decisions |
 
 > 📝 TODO（手写）：把上表扩成完整的方法-问题-产出矩阵。
 > 📝 TODO (by hand): Expand the table above into a full method–question–output matrix.

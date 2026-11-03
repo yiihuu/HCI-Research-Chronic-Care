@@ -10,90 +10,90 @@
 
 ## 1. 设计目标 · Design Goals
 
-从 RQ2「如何设计支持多模态数据整合下医患协同意义建构的交互式仪表盘」推导：
+从 RQ2「如何设计链接选择交互，支持患者低成本建立症状—情境关联并促进个人反思」推导：
 
-Derived from RQ2 ("How should an interactive dashboard support collaborative sensemaking under multimodal data integration?"):
+Derived from RQ2 ("How should a link-selection interaction be designed to support patients in building symptom–context links at low cost and to promote personal reflection?"):
 
-- **G1 · 多源对齐**：把纵向临床数据（MRI / EDSS / 复发）与患者自报体验（症状 / 生活影响）放在同一意义空间。
-  **G1 · Cross-source alignment** — bring longitudinal clinical data (MRI / EDSS / relapse records) and patient-reported experiences (symptoms / life impact) into a shared space of meaning.
-- **G2 · 协同推理**：界面服务于"医患一起看、一起解释"，而非各自视图。
-  **G2 · Collaborative reasoning** — the interface should serve "looking and interpreting together", not two separate views.
-- **G3 · 多模态录入与回看**：支持语音、身体地图、时间轴等多种自报模态。
-  **G3 · Multimodal capture and review** — support multiple self-report modalities: voice, body map, timeline.
-- **G4 · 复诊准备**：把分散体验收敛为可被复诊对话消耗的"回忆锚点"。
-  **G4 · Visit preparation** — condense scattered experiences into "recall anchors" that the follow-up conversation can actually consume.
+- **G1 · 低门槛归因**：一键式把症状连到情境因子（环境 / 心情 / 活动），不要求自由文字负担。
+  **G1 · Low-effort attribution** — one-tap linking of a symptom to a contextual factor (environment / mood / activity), with no free-text burden.
+- **G2 · 个人意义建构**：患者亲手绘制的链接，汇成一张可回顾的个人症状—情境地图。
+  **G2 · Personal sensemaking** — the links the patient draws accumulate into a revisitable personal symptom–context map.
+- **G3 · 情境显式化**：把"环境 / 心情 / 活动"等做成可选择的情境节点，让隐性归因可见。
+  **G3 · Context explicitness** — environment / mood / activity become selectable context nodes, making implicit attribution visible.
+- **G4 · 反思回路**：随时间积累，模式自然浮现（如"我的疲劳常和天气相连"），支持回顾式反思。
+  **G4 · Reflection loop** — over time, patterns emerge naturally (e.g., "my fatigue often links to weather"), supporting retrospective reflection.
 
-> 📝 TODO（手写）：把 G1–G4 与具体设计决策、评估指标一一对应；可加一张 design goals → features 映射表。
-> 📝 TODO (by hand): Map G1–G4 one-to-one onto concrete design decisions and evaluation criteria; consider adding a design goals → features table.
+> 📝 TODO（手写）：把 G1–G4 与具体设计决策、评估指标一一对应；可加一张 design goals → features 映射表（例如 G1 ↔ 点击式链接 UI、G4 ↔ 个人链接图时间视图）。
+> 📝 TODO (by hand): Map G1–G4 one-to-one onto concrete design decisions and evaluation criteria; consider adding a design goals → features table (e.g., G1 ↔ tap-to-link UI, G4 ↔ temporal view of the personal link graph).
 
 ## 2. 设计素材 / 探针 · Design Probe
 
-当前原型 **Nomi 暖记（chronic-recall）** 作为早期设计探针，验证"症状回忆 + 身体地图 + 复诊准备"的核心闭环。
+当前原型 **Nomi 暖记（chronic-recall）** 作为早期设计探针，验证"症状记录 + 身体地图 + 复诊准备"的闭环；下一步将把 **链接选择** 前置为核心交互。
 
-The current prototype **Nomi 暖记 (chronic-recall)** serves as an early design probe that validates the core loop of "symptom recall + body map + visit preparation".
+The current prototype **Nomi 暖记 (chronic-recall)** serves as an early design probe that validates the loop of "symptom logging + body map + visit preparation"; the next step is to foreground **link-selection** as the core interaction.
 
 ### 2.1 屏幕与功能 · Screens
 
 | 屏幕 · Screen | 功能 · Function | 对应设计目标 · Design goal |
 |---|---|---|
-| 选择人物 / Select | 多档案入口 / Multi-profile entry | 个性化 / Personalization |
-| 工作台 / Workbench | 复诊窗口、温和记录提示（FR1）/ Visit window, gentle recording prompt (FR1) | G4 |
-| 身体地图 / Body Map | 语音/文字症状 → 同步到身体部位 / Voice or text symptoms synced onto body regions | G1, G3 |
-| 回忆锚点 / Recall Anchors | 标记"想留意的部分" / Mark what the patient wants to raise | G2, G4 |
-| 时间表 / Timeline | 复诊窗口内症状波动 / Symptom fluctuation within the visit window | G1, G3 |
+| 症状录入 / Symptom entry | 记录当下症状（语音 / 文字）/ Record a present symptom (voice / text) | G1 |
+| **链接选择 / Link selection（核心）** | 针对症状点击判定与环境/心情/活动的关联 / Tap to judge the symptom's link to environment / mood / activity | **G1, G3** |
+| 身体地图 / Body Map | 症状落到身体部位（可选）/ Symptom placed on a body region (optional) | G3 |
+| 个人链接图 / Personal link graph | 回顾症状—情境链接网络与浮现模式 / Review the symptom–context link network and emerging patterns | G2, G4 |
+| 时间表 / Timeline | 症状与链接随时间的波动 / Symptom and link fluctuation over time | G4 |
 
-> 📝 TODO（手写）：补每个屏幕的截图 / 线框（建议放 `prototype/` 或 `docs/assets/`），并写交互细节（如语音→身体部位同步的具体机制）。
-> 📝 TODO (by hand): Add a screenshot or wireframe per screen (suggest `prototype/` or `docs/assets/`), and describe interaction details such as the exact mechanism of syncing voice to body regions.
+> 📝 TODO（手写）：补每个屏幕的截图 / 线框（建议放 `prototype/` 或 `docs/assets/`），并写交互细节（如"点击症状 → 弹出情境因子 chips → 选中即建立链接"的具体机制）。
+> 📝 TODO (by hand): Add a screenshot or wireframe per screen (suggest `prototype/` or `docs/assets/`), and describe interaction details such as the exact mechanism of "tap symptom → context-factor chips pop up → selecting creates a link".
 
-### 2.2 架构 · Architecture
-
-```
-患者自报输入 ──(语音/文字)──▶ 多模态解析 ──▶ 身体地图 / 时间轴 同步
-                                          │
-                                    回忆锚点提炼 ──▶ 复诊准备整理（localStorage）
-                                          │
-                        复诊对话 ──▶ 医患共同查看 / 协同意义建构
-```
+### 2.2 架构 / Architecture
 
 ```
-Patient self-report ──(voice/text)──▶ Multimodal parsing ──▶ Body map / timeline sync
-                                                    │
-                                          Recall-anchor distillation ──▶ Visit-prep summary (localStorage)
-                                                    │
-                      Follow-up dialogue ──▶ Joint review / collaborative sensemaking
+患者症状录入 ──(语音/文字)──▶ 症状节点
+                                │
+       情境因子（环境/心情/活动）◀── 链接选择（患者点击建立边）
+                                │
+                         个人链接图 ──▶ 模式浮现 / 回顾式反思（localStorage）
 ```
 
-> 📝 TODO（手写）：补全数据流图与模块职责；说明哪些在本地、哪些需服务端（隐私与 IRB 考量）。
-> 📝 TODO (by hand): Complete the data-flow diagram and module responsibilities; clarify what stays local vs. what needs a server (privacy and IRB considerations).
+```
+Patient symptom entry ──(voice/text)──▶ Symptom node
+                                         │
+   Context factors (environment/mood/activity) ◀── Link selection (patient taps to create edge)
+                                         │
+                          Personal link graph ──▶ Pattern emergence / retrospective reflection (localStorage)
+```
 
-## 3. 多模态交互 · Multimodal Interaction
+> 📝 TODO（手写）：补全数据流图与模块职责；说明哪些在本地、哪些需服务端（隐私与 IRB 考量）；明确"链接"的数据结构（节点 / 边 / 置信度 / 时间戳）。
+> 📝 TODO (by hand): Complete the data-flow diagram and module responsibilities; clarify what stays local vs. what needs a server (privacy and IRB considerations); specify the data structure of a "link" (node / edge / confidence / timestamp).
 
-- **语音 → 视觉**：口语化症状经解析落到身体地图的具体部位（降低录入门槛）。
-  **Voice → visual** — colloquially phrased symptoms are parsed onto specific body regions, lowering the entry barrier.
-- **空间表征**：用身体地图把"看不见的症状"空间化，便于医患指认。
-  **Spatial representation** — the body map spatializes otherwise invisible symptoms so that clinician and patient can point at them together.
-- **时间表征**：复诊窗口 + 症状波动时间轴，把纵向轨迹显式化。
-  **Temporal representation** — the visit window plus a symptom-fluctuation timeline make the longitudinal trajectory explicit.
+## 3. 链接选择交互 · Link-Selection Interaction
 
-> 📝 TODO（手写）：讨论多模态整合如何具体促进"协同意义建构"（引用 related work 中的意义建构 / 可视化理论）。
-> 📝 TODO (by hand): Discuss how multimodal integration specifically fosters collaborative sensemaking (cite sensemaking and visualization theory from the related work).
+- **结构化归因 vs 自由记录**：患者不必写长文，只需在症状与情境因子间点选，把"我感觉这次不舒服可能和天气有关"变成一条可存储的显式链接。
+  **Structured attribution vs. free logging** — instead of writing prose, the patient taps between a symptom and a context factor, turning "I think this flare is weather-related" into a storable explicit link.
+- **情境因子的分类法**：环境（天气 / 温度 / 噪音）、心情（焦虑 / 低落 / 平静）、活动（运动 / 久坐 / 社交）等作为可扩展的情境维度。
+  **Taxonomy of context factors** — environment (weather / temperature / noise), mood (anxious / low / calm), activity (exercise / sitting / social) as extensible context dimensions.
+- **低认知负荷**：每次只处理"一个症状 ↔ 一个情境"的微小决策，避免一次性反思的负担。
+  **Low cognitive load** — each interaction is a tiny decision of "one symptom ↔ one context", avoiding the burden of one-shot reflection.
+
+> 📝 TODO（手写）：讨论链接选择如何具体促进"个人意义建构"（引用 related work 中的反思支持 / personal informatics 理论）；说明情境因子的初始集合如何确定（来自 RQ1 访谈发现）。
+> 📝 TODO (by hand): Discuss how link-selection specifically fosters personal sensemaking (cite reflection-support / personal-informatics theory from the related work); explain how the initial set of context factors is determined (from RQ1 interview findings).
 
 ## 4. 设计理由与方法论 · Rationale
 
-- 原型采用**参与式 / 迭代式**路线：先以探针收集医生反馈，再重设计。
-  The prototype follows a **participatory and iterative** route: first collect clinician feedback with the probe, then redesign.
-- 与 RQ1 形成闭环：RQ1 发现的障碍直接驱动 RQ2 的设计决策。
-  It closes the loop with RQ1: obstacles surfaced by RQ1 directly drive RQ2 design decisions.
+- 原型采用**参与式 / 迭代式**路线：先以探针收集患者反馈，再重设计。
+  The prototype follows a **participatory and iterative** route: first collect patient feedback with the probe, then redesign.
+- 与 RQ1 形成闭环：RQ1 发现的归因障碍 / 心智模型直接驱动 RQ2 的链接选择设计决策。
+  It closes the loop with RQ1: the attribution obstacles and mental models surfaced by RQ1 directly drive RQ2 link-selection design decisions.
 
-> 📝 TODO（手写）：写 design rationale 段落，明确本设计相对现有临床仪表盘的差异化；链接到 `related-work.md` 的缺口陈述。
-> 📝 TODO (by hand): Write the design rationale paragraph, making explicit how this design differs from existing clinical dashboards; cross-link to the gap statement in `related-work.md`.
+> 📝 TODO（手写）：写 design rationale 段落，明确本设计相对现有症状追踪 App（被动记录）的差异化；链接到 `related-work.md` 的缺口陈述。
+> 📝 TODO (by hand): Write the design rationale paragraph, making explicit how this design differs from existing symptom-tracking apps (passive logging); cross-link to the gap statement in `related-work.md`.
 
 ## 5. 当前状态与下一步 · Status & Next
 
-- 状态：早期探针，待 RQ1 形成性发现驱动重设计。
-  Status: an early probe, awaiting redesign driven by RQ1 formative findings.
-- 下一步：基于访谈发现重构仪表盘主视图；评估多模态录入的可用性。
-  Next: restructure the dashboard's main view based on interview findings; evaluate the usability of multimodal capture.
+- 状态：早期探针，待 RQ1 形成性发现驱动"链接选择"前置重设计。
+  Status: an early probe, awaiting RQ1 formative findings to drive the redesign that foregrounds link-selection.
+- 下一步：基于访谈发现定义情境因子分类 → 重构原型主交互为链接选择 → 评估点击式归因的可用性。
+  Next: define the context-factor taxonomy from interview findings → restructure the prototype's main interaction into link-selection → evaluate the usability of tap-to-attribute.
 
 > 📝 TODO（手写）：每次汇报时更新本节。
 > 📝 TODO (by hand): Update this section at every advisor report.

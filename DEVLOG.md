@@ -20,6 +20,8 @@
   Established the standing convention of pairing every Chinese edit with an English counterpart, and backfilled English for all documents except the README (the four docs/ chapters, PROGRESS, DEVLOG, analysis/README).
 - **下一步 / Next**：手写充实 docs 四章节（每次给导师汇报的内容）；推进 IRB 与预访谈。
   Next: hand-write the four docs/ chapters (the material reported to the advisor each round); advance the IRB and pilot interviews.
+- **研究转向（晚）/ Pivot (eve)**：用户明确放弃"系统/医患协同意义建构"，改为"患者端慢病自我管理 + 链接选择（link-selection）交互"——例：发现症状→点击判定与环境/心情的关联。案例由 MS **泛化到一般慢性病**。已重构 README 与 docs/{system-design,methods,related-work} 框架（RQ1 改患者侧需求、RQ2 改链接选择、related-work 轴线重排、SDM 降为背景）；仓库名 `HCI-Research-Chronic-Care` 仍适用。
+  Pivot (eve): the user dropped "system / clinician–patient collaborative sensemaking" in favour of "patient-side chronic-disease self-management + link-selection interaction" — e.g., notice a symptom → tap to judge its link to environment/mood. The case generalized from MS to chronic disease broadly. Reframed README and docs/{system-design,methods,related-work} (RQ1 → patient-side needs, RQ2 → link-selection, related-work axes reordered, SDM demoted to background); the repo name `HCI-Research-Chronic-Care` still fits.
 - **已知 / Known**：仓库位于 OneDrive 同步目录（`newresearch/`）。为避免 `.git` 与 OneDrive 实时同步冲突，**请勿在多台设备同时打开编辑**；大文件（录音/转录）走 `analysis/raw/`、`analysis/transcripts/`（已 gitignore）或外部存储，勿直接入库。
   Known: the repository lives inside the OneDrive-synced folder (`newresearch/`). To avoid `.git` conflicting with OneDrive's real-time sync, **do not edit it on multiple devices at once**; keep large files (recordings, transcripts) in `analysis/raw/` and `analysis/transcripts/` (gitignored) or in external storage rather than committing them.
 - **待决 / Open**：仓库名与首版框架已定稿；后续专注手写 docs/ 四章节。
