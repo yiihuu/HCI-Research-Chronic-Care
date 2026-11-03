@@ -47,6 +47,10 @@
       <td style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
       <td><b>范围扩展 / Scope expansion</b>：以 InterLeaf 为参照，把系统设计从单一「链接选择」扩展为<b>低负担三段式归因</b>（感觉 → 触发 → 缓解）＋<b>跨发作个人模式层</b>；新增 <code>note/interleaf-borrowing.md</code>（本体映射 / scope 选项表）；<code>docs/system-design.md</code> 与 <code>docs/poster/manuscript.md</code> 骨架重排；<code>docs/related-work.md</code> 增补「标签本体与 AI 辅助记录」轴线；<code>docs/references.md</code> 补 InterLeaf 完整引文。<br><b>Scope expansion</b>: using InterLeaf as the reference point, expanded the system design from a single link-selection interaction to a <b>low-burden three-stage attribution flow</b> (feel → trigger → relief) plus a <b>cross-episode personal-pattern layer</b>; added <code>note/interleaf-borrowing.md</code> (ontology mapping / scope options); restructured the skeletons of <code>docs/system-design.md</code> and <code>docs/poster/manuscript.md</code>; added a “tag ontologies &amp; AI-assisted logging” axis to <code>docs/related-work.md</code>; completed the InterLeaf citation in <code>docs/references.md</code>.</td>
     </tr>
+    <tr>
+      <td style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
+      <td><b>可运行原型 / Runnable prototype</b>：新增 <code>prototype/forest/</code>——「归因林 · Attribution Grove」。三段式归因录入（感觉 → 触发 → 缓解）+ 归因树视图（身体部位 → 症状 → 每次发作 → 触发/缓解）+ 跨发作规律视图。标签本体依 InterLeaf Table 1，trigger 拆为环境/心情两轴，各轴支持自定义标签。纯静态、localStorage 持久化，已用浏览器自动化跑通完整录入与查看流程。<br><b>Runnable prototype</b>: added <code>prototype/forest/</code> — “Attribution Grove”. A three-stage attribution capture flow (feel → trigger → relief), an attribution-tree view (body area → symptom → episode → triggers/remedies), and a cross-episode patterns view. The tag ontology follows InterLeaf Table 1, with triggers split into environmental and mood axes and custom labels supported on every axis. Fully static, persisted in localStorage, verified end-to-end with browser automation.</td>
+    </tr>
   </tbody>
 </table>
 

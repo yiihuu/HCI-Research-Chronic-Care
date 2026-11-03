@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>归因林 · Attribution Grove（研究原型）</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ══════════ 顶部栏 ══════════ -->
+<header class="topbar">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 22V9" stroke="#3f6b4a" stroke-width="2" stroke-linecap="round"/><path d="M12 13c0-3 2-5 5-5 0 3-2 5-5 5z" fill="#6b9c6e"/><path d="M12 16c0-2.5-1.8-4.5-4.5-4.5 0 2.5 1.8 4.5 4.5 4.5z" fill="#8fb98c"/></svg>
+    </span>
+    <span class="brand-name">归因林 <i>Attribution Grove</i></span>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-view="record" role="tab">记录</button>
+    <button class="tab" data-view="grove" role="tab">树林</button>
+    <button class="tab" data-view="pattern" role="tab">规律</button>
+  </div>
+</header>
+
+<!-- ══════════ 视图一：记录（三段式归因） ══════════ -->
+<main id="viewRecord" class="view">
+  <section class="card entry-card">
+    <h2 class="card-title">现在感觉怎么样？</h2>
+    <p class="card-sub">从身体部位开始，一步步把它归因下去。</p>
+    <button class="big-btn" id="startBtn">
+      <span class="bb-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 21V10" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M12 14c0-3.2 2.2-5.5 5.5-5.5C17.5 11.7 15.2 14 12 14z" fill="#cfe8d6"/><path d="M12 17c0-2.8-2-5-4.8-5C7.2 14.8 9 17 12 17z" fill="#cfe8d6"/></svg>
+      </span>
+      我有症状，记一笔
+    </button>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2 class="card-title">最近记录</h2>
+      <span class="count-pill" id="recCount">0 条</span>
+    </div>
+    <div id="recentList" class="recent"></div>
+  </section>
+</main>
+
+<!-- ══════════ 视图二：树林（归因图） ══════════ -->
+<main id="viewGrove" class="view" hidden>
+  <section class="card grove-card">
+    <div class="card-head">
+      <h2 class="card-title">我的归因林</h2>
+      <div class="legend">
+        <span class="lg"><i class="dot d-body"></i>身体部位</span>
+        <span class="lg"><i class="dot d-sym"></i>症状</span>
+        <span class="lg"><i class="dot d-env"></i>环境触发</span>
+        <span class="lg"><i class="dot d-mood"></i>心情触发</span>
+        <span class="lg"><i class="dot d-cope"></i>缓解</span>
+      </div>
+    </div>
+    <p class="card-sub">每一次发作都会长出一根新的枝条。点节点看细节。</p>
+    <div class="grove-scroll">
+      <div class="grove-cols">
+        <span style="width:128px">身体部位</span>
+        <span style="width:168px">症状</span>
+        <span style="width:96px">时间</span>
+        <span style="width:156px">触发原因</span>
+        <span>如何缓解</span>
+      </div>
+      <svg id="groveSvg" role="img" aria-label="归因树图"></svg>
+    </div>
+    <div class="grove-tools">
+      <button class="tool-btn" id="zoomOut" aria-label="缩小">−</button>
+      <button class="tool-btn" id="zoomIn" aria-label="放大">+</button>
+      <button class="tool-btn wide" id="zoomFit">适配</button>
+    </div>
+  </section>
+</main>
+
+<!-- ══════════ 视图三：规律（跨发作个人模式） ══════════ -->
+<main id="viewPattern" class="view" hidden>
+  <section class="card">
+    <h2 class="card-title">我的触发规律</h2>
+    <p class="card-sub">多次记录之后，这里开始显出规律。</p>
+    <div id="patternBody" class="pattern"></div>
+  </section>
+  <section class="card">
+    <h2 class="card-title">缓解方式回顾</h2>
+    <div id="reliefBody" class="pattern"></div>
+  </section>
+</main>
+
+<!-- ══════════ 录入抽屉（三段式） ══════════ -->
+<div class="drawer-mask" id="drawerMask" hidden>
+  <div class="drawer" role="dialog" aria-modal="true" aria-label="记录症状归因">
+    <div class="drawer-head">
+      <button class="icon-btn" id="drawerClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="steps" id="steps">
+        <span class="step active" data-s="1">感觉</span>
+        <span class="step-line"></span>
+        <span class="step" data-s="2">触发</span>
+        <span class="step-line"></span>
+        <span class="step" data-s="3">缓解</span>
+      </div>
+      <span class="spacer"></span>
+    </div>
+
+    <div class="drawer-body" id="drawerBody"></div>
+
+    <div class="drawer-foot">
+      <button class="btn ghost" id="backBtn" hidden>上一步</button>
+      <button class="btn primary" id="nextBtn">下一步</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 节点详情弹层 ══════════ -->
+<div class="sheet-mask" id="sheetMask" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="节点详情">
+    <div class="sheet-head">
+      <h3 id="sheetTitle">节点</h3>
+      <button class="icon-btn" id="sheetClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="ontology.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

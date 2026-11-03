@@ -1,5 +1,7 @@
 # 系统设计 · System Design（RQ2）
 
+> 原型 · Prototype：[prototype/forest/](../prototype/forest/)（归因林 · Attribution Grove）
+
 ## 1. 设计目标 · Design Goals
 
 📝 TODO
