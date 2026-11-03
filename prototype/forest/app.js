@@ -168,7 +168,7 @@ function startGrowth(areaId) {
     stageKey: areaId ? 'symptom' : 'area',
     symptoms: [], env: [], mood: [], copings: [],
     relief: '', severity: 'medium', emotions: [],
-    ts: Date.now(), note: '',
+    ts: Date.now(), note: '', timeOpt: 'now',
     picked: [], open: {}, expanded: {},
   };
   pending.open[pending.stageKey] = true;
@@ -719,22 +719,25 @@ function openAnnotate(x, y) {
   const layer = $('popLayer');
   const now = Date.now(), H = 3600e3, D = 24 * H;
   const times = [
-    { l: '就是现在', v: now },
-    { l: '今天早些时候', v: now - 3 * H },
-    { l: '今天早上', v: now - 8 * H },
-    { l: '昨天', v: now - D },
-    { l: '更早', v: now - 3 * D },
+    { k: 'now', l: '就是现在', v: now },
+    { k: 't1', l: '今天早些时候', v: now - 3 * H },
+    { k: 't2', l: '今天早上', v: now - 8 * H },
+    { k: 'd1', l: '昨天', v: now - D },
+    { k: 'd2', l: '更早', v: now - 3 * D },
   ];
+  if (!p.timeOpt) p.timeOpt = 'now';
   layer.innerHTML = `
     <div class="pop">
       <div class="pop-h">这次的细节<button class="pop-x" id="popX">×</button></div>
       <div class="pop-row"><div class="pop-k">什么时候</div><div class="pop-chips" id="popTime">
-        ${times.map((t) => `<span class="pc ${Math.abs(p.ts - t.v) < 1000 ? 'on' : ''}" data-v="${t.v}">${t.l}</span>`).join('')}
+        ${times.map((t) => `<span class="pc ${p.timeOpt === t.k ? 'on' : ''}" data-k="${t.k}" data-v="${t.v}">${t.l}</span>`).join('')}
       </div></div>
       <div class="pop-row"><div class="pop-k">有多难受</div><div class="pop-chips" id="popSev">
         ${SEVERITY.map((s) => `<span class="pc ${p.severity === s.id ? 'on' : ''}" data-v="${s.id}">${s.zh}</span>`).join('')}
       </div></div>
-      <div class="pop-row"><div class="pop-k">情绪 <i>选填</i></div><div class="pop-chips" id="popEmo">
+      <div class="pop-row"><div class="pop-k">情绪 <i>选填</i>
+        <button class="pop-fold" id="popEmoFold">展开</button></div>
+        <div class="pop-chips" id="popEmo" hidden>
         ${ONTOLOGY.emotions.map((e) => `<span class="pc sm ${p.emotions.includes(e.id) ? 'on' : ''}" data-v="${e.id}">${e.zh}</span>`).join('')}
       </div></div>
       <div class="pop-row"><div class="pop-k">写一句 <i>选填</i></div>
@@ -742,17 +745,26 @@ function openAnnotate(x, y) {
     </div>`;
   layer.hidden = false;
   const c = svgToClient(x, y);
-  layer.style.left = Math.max(10, Math.min(window.innerWidth - 330, c.x - 150)) + 'px';
-  layer.style.top = Math.max(10, c.y + 18) + 'px';
+  const pop = layer.querySelector('.pop');
+  const h = pop.offsetHeight || 460;
+  let top = c.y + 20;
+  if (top + h > window.innerHeight - 10) top = Math.max(10, c.y - h - 16);
+  layer.style.left = Math.max(10, Math.min(window.innerWidth - 326, c.x - 150)) + 'px';
+  layer.style.top = top + 'px';
 
   $('popX').addEventListener('click', () => { layer.hidden = true; });
   $('popTime').addEventListener('click', (e) => {
     const s = e.target.closest('.pc'); if (!s) return;
-    p.ts = +s.dataset.v; layer.hidden = true; renderAll();
+    p.ts = +s.dataset.v; p.timeOpt = s.dataset.k; layer.hidden = true; renderAll();
   });
   $('popSev').addEventListener('click', (e) => {
     const s = e.target.closest('.pc'); if (!s) return;
     p.severity = s.dataset.v; layer.hidden = true; renderAll();
+  });
+  $('popEmoFold').addEventListener('click', () => {
+    const box = $('popEmo');
+    box.hidden = !box.hidden;
+    $('popEmoFold').textContent = box.hidden ? '展开' : '收起';
   });
   $('popEmo').addEventListener('click', (e) => {
     const s = e.target.closest('.pc'); if (!s) return;
@@ -943,7 +955,8 @@ function renderPatterns() {
     [...r.env, ...r.mood].forEach((t) => {
       const isEnv = r.env.includes(t);
       const k = t + '||' + sym;
-      pair[k] = pair[k] || { t, sym, env: isEnv, n: 0 };
+      const tLabel = isEnv ? zh(ONTOLOGY.env, t) : zh(ONTOLOGY.mood, t);
+      pair[k] = pair[k] || { t: tLabel, sym, env: isEnv, n: 0 };
       pair[k].n++;
     });
   });
