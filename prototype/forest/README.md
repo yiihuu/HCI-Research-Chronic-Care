@@ -1,7 +1,8 @@
 # 归因林 · Attribution Grove（原型说明）
 
-> 运行方式：直接用浏览器打开 `index.html`（纯静态，无依赖、无网络请求，数据存 localStorage）。
-> How to run: open `index.html` in a browser (static, no dependencies, no network calls; data lives in localStorage).
+> 在线 · Live: http://8.148.233.53/grove/
+> 本地 · Local: 用浏览器打开 `index.html`（纯静态，无依赖、无网络请求，数据存 localStorage）。
+> Live: http://8.148.233.53/grove/ — Local: open `index.html` in a browser (static, no dependencies, no network calls; data lives in localStorage).
 
 ## 视图 · Views
 
