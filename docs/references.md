@@ -4,6 +4,7 @@
 
 - Between Control and Uncertainty: Understanding Self-Tracking Practices in Enigmatic Disease Management
 - InterLeaf: A Letter-Based Mobile Platform for Reflection, Connection, and Chronic Pain Support
+  - Khalilipicha, S., Froozanfar, A., Gromala, D., Shaw, C., Pasquier, P., and Derbyshire, P. 2026. *InterLeaf: A Letter-Based Mobile Platform for Reflection, Connection, and Chronic Pain Support.* In Extended Abstracts of the 2026 CHI Conference on Human Factors in Computing Systems (CHI EA '26). ACM. https://doi.org/10.1145/3772363.3798739
 - "You Can See the Connections": Facilitating Visualization of Care Priorities in People Living with Multiple Chronic Health Conditions
 - 📝 TODO（补全题名 / 出处）
 

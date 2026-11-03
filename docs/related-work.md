@@ -22,7 +22,11 @@
 
 📝 TODO
 
-### F.（背景脉络）共享决策与协同意义建构 · SDM & Collaborative Sensemaking
+### F. 标签本体与 AI 辅助记录 · Tag Ontologies & AI-Assisted Logging
+
+📝 TODO
+
+### G.（背景脉络）共享决策与协同意义建构 · SDM & Collaborative Sensemaking
 
 📝 TODO
 

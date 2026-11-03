@@ -50,7 +50,21 @@
 
 📝 TODO
 
-## 5. 系统设计：链接选择交互（RQ2）· System Design
+## 5. 系统设计：三段式归因与跨发作层（RQ2）· System Design
+
+### 5.1 一次发作：感觉 → 触发 → 缓解 · One Episode: Feel → Trigger → Relief
+
+📝 TODO
+
+### 5.2 标签体系 · Tag System
+
+📝 TODO
+
+### 5.3 跨发作层与个人模式 · Cross-Episode Layer & Personal Patterns
+
+📝 TODO
+
+### 5.4 概念验证与原型 · Proof of Concept & Prototype
 
 📝 TODO
 
@@ -90,7 +104,8 @@
 | RQ + Contributions | §2 | 两张小卡 |
 | Related Work | §3 | 轴线 + 对比表 |
 | Formative Study | §4 | 量表徽章 + 访谈时间线 |
-| System: Link-Selection | §5 | 交互流程图 + 链接图 + 原型截图 |
+| System: Three-Stage Attribution | §5.1–5.2 | 交互流程图 + 标签本体表 |
+| System: Cross-Episode Patterns | §5.3 | 累积链接图 + 个人模式卡 |
 | Status & Findings | §6 | 数据看板 + 主题卡 |
 | Discussion / Limitation / Conclusion | §7–9 | 三栏 |
 | References + Ack | §10–11 | 小字 |

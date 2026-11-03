@@ -62,6 +62,7 @@ HCI-Research-Chronic-Care/
 │       └── manuscript.md
 ├── note/
 │   ├── concepts.md
+│   ├── interleaf-borrowing.md
 │   └── assets/
 ├── 资料/
 │   └── README.md
@@ -79,6 +80,7 @@ HCI-Research-Chronic-Care/
 ## 概念笔记与资料库 · Concept Notes & Material Library
 
 - [note/](./note/) · 方法论概念梳理（RTD / 概念验证 / 研究设计 / 数据收集）
+- [note/interleaf-borrowing.md](./note/interleaf-borrowing.md) · InterLeaf 借鉴拆解（本体映射 / scope 选项）
 - [资料/](./资料/) · 待上传的方法论书籍 / PDF（入库前确认无版权与隐私风险）
 
 ## 路线规划 · Roadmap
