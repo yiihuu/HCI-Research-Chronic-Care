@@ -17,7 +17,6 @@
   --cope:#7b6aa8;     /* 缓解 */
   --body:#3f6b4a;     /* 身体部位 */
   --sym:#c07a4e;      /* 症状 */
-  --amber:#e0a83c;
   --shadow:0 1px 3px rgba(34,51,42,.05), 0 6px 18px rgba(34,51,42,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -54,7 +53,7 @@ svg{display:block;}
 .card{background:var(--card);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow);}
 .card-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
 .card-title{font-size:17px;font-weight:700;}
-.card-sub{font-size:13px;color:var(--sub);margin-bottom:14px;}
+.card-sub{font-size:13px;color:var(--sub);margin-bottom:14px;line-height:1.75;}
 .count-pill{font-size:12px;font-weight:600;color:var(--green);background:var(--green-soft);border-radius:999px;padding:3px 11px;margin-left:auto;}
 
 /* ---------- 入口按钮 ---------- */
@@ -74,7 +73,7 @@ svg{display:block;}
 .rec{
   display:flex;align-items:flex-start;gap:11px;
   background:#fafcf9;border-radius:14px;padding:11px 13px;
-  border:1px solid transparent;transition:border-color .15s;
+  border:1px solid transparent;transition:border-color .15s;cursor:pointer;
 }
 .rec:hover{border-color:var(--line);}
 .rec-time{font-size:11px;color:var(--sub);flex:none;width:74px;padding-top:2px;line-height:1.4;}
@@ -92,42 +91,114 @@ svg{display:block;}
 .empty{font-size:13px;color:var(--sub);text-align:center;padding:26px 10px;line-height:1.9;}
 
 /* ---------- 树林 ---------- */
-.grove-card{padding-bottom:16px;}
+.grove-card{padding-bottom:16px;position:relative;}
 .legend{display:flex;flex-wrap:wrap;gap:11px;margin-left:auto;}
 .lg{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:5px;font-weight:600;}
 .dot{width:9px;height:9px;border-radius:50%;display:block;}
 .d-body{background:var(--body);} .d-sym{background:var(--sym);}
 .d-env{background:var(--env);} .d-mood{background:var(--mood);} .d-cope{background:var(--cope);}
-.grove-scroll{overflow:auto;max-height:620px;border-radius:14px;background:
+
+.grove-scroll{overflow:auto;max-height:640px;border-radius:14px;background:
   radial-gradient(circle at 50% 120%, #e9f0e4 0%, rgba(255,255,255,0) 62%), #fcfdfb;
   border:1px solid var(--line);padding:12px;}
 .grove-scroll::-webkit-scrollbar{width:9px;height:9px;}
 .grove-scroll::-webkit-scrollbar-thumb{background:#d3ded4;border-radius:5px;}
-/* 列标题（与 SVG 内列位对齐） */
-.grove-cols{
-  display:flex;gap:0;font-size:11px;color:var(--sub);font-weight:700;
-  letter-spacing:.04em;padding:0 0 8px 18px;position:sticky;left:0;
-}
-.grove-cols span{flex:none;}
-.grove-tools{position:absolute;right:30px;margin-top:-46px;display:flex;gap:6px;}
+.grove-tools{display:flex;justify-content:flex-end;gap:6px;margin-top:10px;}
 .tool-btn{
   width:32px;height:32px;border-radius:10px;border:1px solid var(--line);
   background:#fff;color:var(--green);font-size:17px;font-weight:700;line-height:1;
   box-shadow:0 1px 4px rgba(34,51,42,.07);
 }
 .tool-btn.wide{width:auto;padding:0 12px;font-size:12px;font-weight:600;}
-#groveSvg{display:block;}
+#groveSvg{display:block;font-family:inherit;}
 
-/* 节点 */
+/* ---------- 生长提示条 ---------- */
+.grow-bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:linear-gradient(120deg,#eef5ec,#f4f7ef);
+  border:1px solid #dce9dc;border-radius:14px;padding:9px 13px;margin-bottom:10px;
+}
+.gb-q{font-size:14px;font-weight:700;color:var(--green);}
+.gb-hint{font-size:12px;color:var(--sub);}
+.gb-cancel{
+  margin-left:auto;border:1px solid var(--line);background:#fff;color:var(--sub);
+  border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;
+}
+.gb-cancel:hover{color:var(--green);border-color:var(--leaf);}
+
+/* ---------- SVG 节点 ---------- */
 .node{cursor:pointer;}
-.node rect,.node circle,.node ellipse{transition:opacity .15s;}
-.node:hover .nbox{filter:brightness(.97);}
 .nlabel{font-size:12px;font-weight:600;pointer-events:none;}
 .nsub{font-size:10px;pointer-events:none;}
-.ncount{font-size:10px;font-weight:700;pointer-events:none;}
-/* 叶子标签与记录点不互相遮挡 */
-#groveSvg .node[data-kind]{pointer-events:auto;}
-#groveSvg .node[data-detail="1"]{pointer-events:auto;}
+.stage-dot{pointer-events:none;}
+
+/* 叶子：候选（虚线空芽） / 已选（实心长在枝上） */
+.leaf.ghost .nbox{transition:fill .15s,stroke .15s;}
+.leaf.ghost:hover .nbox{fill:#f3f8f3;}
+.leaf.sp-more .nbox,.leaf.sp-skip .nbox,.leaf.sp-custom .nbox{stroke:#c6d5c9;}
+.leaf.sp-custom:hover .nbox{fill:#eef5ec;}
+
+/* 刚点中的叶子：轻微生长感 */
+@keyframes growIn{
+  from{opacity:0;transform:scale(.72);}
+  to{opacity:1;transform:scale(1);}
+}
+.leaf.fresh{animation:growIn .32s cubic-bezier(.22,.9,.3,1);transform-origin:center;}
+
+/* 生长中的记录节点 */
+@keyframes pulse{
+  0%{r:8;opacity:1;}
+  70%{r:14;opacity:0;}
+  100%{r:14;opacity:0;}
+}
+.pend-joint .pulse{animation:pulse 1.9s ease-out infinite;transform-box:fill-box;transform-origin:center;}
+
+/* 芽 */
+.bud .nbox,.sprout circle{transition:transform .15s;}
+.bud:hover .nbox{transform:scale(1.12);transform-box:fill-box;transform-origin:center;}
+.sprout:hover .nlabel{fill:#2f5638;}
+
+/* ---------- 细节浮层 ---------- */
+.pop-layer{position:fixed;inset:0;z-index:65;pointer-events:none;}
+.pop-layer .pop{pointer-events:auto;position:absolute;}
+.pop{
+  width:308px;background:#fff;border-radius:16px;padding:14px 15px 15px;
+  box-shadow:0 14px 40px rgba(30,45,36,.2);border:1px solid var(--line);
+  animation:popIn .18s ease-out;
+}
+@keyframes popIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.pop-h{font-size:13.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;}
+.pop-x{margin-left:auto;border:none;background:#f1f5f1;color:var(--sub);width:22px;height:22px;border-radius:50%;font-size:14px;line-height:1;}
+.pop-row{margin-bottom:11px;}
+.pop-k{font-size:11.5px;font-weight:700;color:var(--green);margin-bottom:6px;}
+.pop-k i{font-style:normal;font-weight:500;color:var(--sub);font-size:11px;}
+.pop-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.pc{
+  border:1.5px solid var(--line);background:#fff;border-radius:999px;
+  padding:5px 11px;font-size:12.5px;color:var(--ink);cursor:pointer;
+}
+.pc.sm{font-size:11.5px;padding:4px 9px;}
+.pc:hover{border-color:var(--leaf);}
+.pc.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:600;}
+.pop-note{
+  width:100%;border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;
+  font-size:13px;font-family:inherit;outline:none;resize:vertical;min-height:62px;color:var(--ink);
+}
+.pop-note:focus{border-color:var(--leaf);}
+
+/* ---------- 自定义标签输入 ---------- */
+.cf-wrap{font-family:inherit;}
+.cf-sub{display:flex;gap:5px;margin-bottom:4px;}
+.cf-sub-b{
+  font-size:11px;padding:2px 9px;border-radius:999px;background:#eef2ee;color:var(--sub);
+  cursor:pointer;border:1px solid transparent;
+}
+.cf-sub-b.on{background:var(--green);color:#fff;}
+.cf-in{
+  width:230px;border:1.5px dashed var(--leaf);background:#fff;border-radius:10px;
+  padding:7px 11px;font-size:13px;font-family:inherit;outline:none;color:var(--ink);
+}
+.cf-in:focus{border-style:solid;border-color:var(--green);}
 
 /* ---------- 规律 ---------- */
 .pattern{display:flex;flex-direction:column;gap:12px;}
@@ -136,100 +207,17 @@ svg{display:block;}
 .pg-sub{font-size:11.5px;color:var(--sub);margin-bottom:10px;line-height:1.6;}
 .pat-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .pat-row:last-child{margin-bottom:0;}
-.pr-name{font-size:13px;font-weight:600;width:96px;flex:none;}
 .pr-bar{flex:1;height:9px;border-radius:5px;background:#eef2ee;overflow:hidden;}
 .pr-fill{height:100%;border-radius:5px;}
-.pr-num{font-size:12px;color:var(--sub);width:52px;text-align:right;flex:none;font-variant-numeric:tabular-nums;}
-.pr-row-sub{font-size:11.5px;color:var(--sub);margin:-4px 0 10px 106px;}
-
-/* ---------- 抽屉（三段式） ---------- */
-.drawer-mask{position:fixed;inset:0;background:rgba(30,45,36,.4);z-index:60;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px);}
-.drawer{
-  width:100%;max-width:560px;background:#fff;
-  border-radius:24px 24px 0 0;
-  padding:16px 22px calc(18px + env(safe-area-inset-bottom));
-  max-height:92vh;display:flex;flex-direction:column;
-  animation:slideUp .26s cubic-bezier(.22,.9,.3,1);
-}
-@keyframes slideUp{from{transform:translateY(28px);opacity:.6;}to{transform:translateY(0);opacity:1;}}
-.drawer-head{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);}
-.spacer{flex:1;}
-.icon-btn{width:32px;height:32px;border-radius:50%;border:none;background:#f1f5f1;color:var(--green);display:flex;align-items:center;justify-content:center;flex:none;}
-.icon-btn svg{width:17px;height:17px;}
-.steps{display:flex;align-items:center;gap:8px;margin:0 auto;}
-.step{font-size:12.5px;font-weight:600;color:var(--sub);white-space:nowrap;}
-.step.active{color:var(--green);}
-.step.done{color:var(--green2);}
-.step-line{width:26px;height:2px;background:var(--line);border-radius:2px;}
-.step-line.done{background:var(--green2);}
-.drawer-body{flex:1;overflow-y:auto;padding:18px 0 8px;}
-.drawer-foot{display:flex;gap:10px;padding-top:12px;border-top:1px solid var(--line);}
-.btn{border:none;border-radius:14px;padding:13px 20px;font-size:15px;font-weight:700;}
-.btn.primary{flex:1;background:var(--green);color:#fff;}
-.btn.primary:disabled{opacity:.4;cursor:not-allowed;}
-.btn.ghost{background:#f1f5f1;color:var(--green);}
-.btn.ghost:disabled{opacity:.35;cursor:not-allowed;}
-
-/* 抽屉内表单 */
-.q-head{font-size:19px;font-weight:700;margin-bottom:5px;}
-.q-sub{font-size:13px;color:var(--sub);margin-bottom:18px;line-height:1.7;}
-.q-block{margin-bottom:22px;}
-.q-label{font-size:12.5px;font-weight:700;color:var(--green);margin-bottom:9px;display:flex;align-items:center;gap:7px;}
-.q-label .opt{font-weight:500;color:var(--sub);font-size:11px;}
-/* 紧凑网格（部位）——降低扫视负担 */
-.chips.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px;}
-.chips.grid .chip{padding:9px 8px;text-align:center;font-size:13px;}
-.chips.grid .chip .en{display:block;margin-left:0;font-size:9.5px;margin-top:1px;}
-/* 可折叠的次要区块 */
-.fold-toggle{
-  border:none;background:transparent;color:var(--sub);font-size:12px;font-weight:600;
-  padding:4px 0;cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:9px;
-}
-.fold-toggle .arrow{transition:transform .18s;display:inline-block;}
-.fold-toggle.open .arrow{transform:rotate(90deg);}
-.fold-body{display:none;}
-.fold-body.show{display:block;}
-.chips{display:flex;flex-wrap:wrap;gap:8px;}
-.chip{
-  border:1.5px solid var(--line);background:#fff;color:var(--ink);
-  font-size:13.5px;font-weight:500;border-radius:12px;padding:9px 14px;
-  transition:all .14s;text-align:left;
-}
-.chip:hover{border-color:var(--leaf);}
-.chip.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:600;}
-.chip.on.env{background:var(--env);border-color:var(--env);}
-.chip.on.mood{background:var(--mood);border-color:var(--mood);}
-.chip.on.cope{background:var(--cope);border-color:var(--cope);}
-.chip .en{font-size:10px;opacity:.62;margin-left:5px;}
-.chip-wrap{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
-.chip-in{
-  border:1.5px dashed var(--line);background:#fbfcfa;border-radius:12px;
-  padding:8px 13px;font-size:13.5px;width:160px;outline:none;color:var(--ink);
-}
-.chip-in:focus{border-color:var(--leaf);background:#fff;}
-.chip-add{border:1.5px dashed var(--line);background:#fbfcfa;color:var(--sub);border-radius:12px;padding:9px 13px;font-size:13px;font-weight:600;}
-.chip-add:hover{border-color:var(--leaf);color:var(--green);}
-.note-in{
-  width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;
-  font-size:13.5px;font-family:inherit;outline:none;resize:vertical;min-height:74px;color:var(--ink);
-}
-.note-in:focus{border-color:var(--leaf);}
-.time-row{display:flex;gap:8px;flex-wrap:wrap;}
-.time-btn{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:9px 14px;font-size:13.5px;color:var(--ink);}
-.time-btn.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:600;}
-.review-line{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:10px;align-items:baseline;}
-.review-line .rl-k{font-size:11.5px;color:var(--sub);width:52px;flex:none;}
-.review-line .rl-v{font-size:13.5px;font-weight:600;}
-.hint{font-size:12px;color:var(--sub);line-height:1.75;margin-top:10px;}
+.pr-num{font-size:12px;color:var(--sub);width:56px;text-align:right;flex:none;font-variant-numeric:tabular-nums;}
 
 /* ---------- 详情弹层 ---------- */
 .sheet-mask{position:fixed;inset:0;background:rgba(30,45,36,.36);z-index:70;display:flex;align-items:center;justify-content:center;padding:20px;}
 .sheet{
   width:100%;max-width:420px;background:#fff;border-radius:20px;
   padding:18px 20px 20px;max-height:82vh;display:flex;flex-direction:column;
-  box-shadow:0 12px 40px rgba(30,45,36,.2);animation:pop .2s ease-out;
+  box-shadow:0 12px 40px rgba(30,45,36,.2);animation:popIn .2s ease-out;
 }
-@keyframes pop{from{transform:scale(.96);opacity:0;}to{transform:scale(1);opacity:1;}}
 .sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
 .sheet-head h3{font-size:16px;font-weight:700;}
 .sheet-body{overflow-y:auto;font-size:13.5px;line-height:1.85;}
@@ -255,8 +243,7 @@ svg{display:block;}
   .legend{margin-left:0;width:100%;}
   .rec{flex-direction:column;gap:6px;}
   .rec-time{width:auto;}
-  .drawer{border-radius:20px 20px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom));}
-  .q-head{font-size:17px;}
-  .steps{gap:5px;}
-  .step-line{width:16px;}
+  .grow-bar{gap:7px;}
+  .gb-hint{width:100%;}
+  .pop{width:280px;}
 }

@@ -1,19 +1,53 @@
 // ============================================================
 // 归因林 · Attribution Grove
-// 三段式低负担归因：感觉 → 触发 → 缓解
-// 跨发作层：累积为「归因树」，长出个人模式
+// ------------------------------------------------------------
+// 交互核心：在树林上直接生长。
+//   · 点树干上的 ＋ → 长出一根新枝
+//   · 枝头长出候选叶子（叶子就是选项）
+//   · 点一片叶子 → 它被收拢到枝上，枝条继续往外长
+//   · 已选的叶子留在枝上，没选的留成空芽（可随时补选）
+//   · 多选 = 从同一个节上分出多根枝
+// 跨发作层：同标签的叶子之间连一条淡线，规律自己浮出来。
 // ============================================================
 
 const $ = (id) => document.getElementById(id);
-const STORE_KEY = 'grove_records_v1';
+const STORE_KEY = 'grove_records_v2';
 
-// ---------- 状态 ----------
 let records = loadRecords();
-let draft = null;       // 当前录入草稿
-let step = 1;           // 1 感觉 / 2 触发 / 3 缓解
+let pending = null;      // 正在生长的那根枝
 let zoom = 1;
-let svgWidth = 0;       // 当前归因树的原始宽度
+let svgW = 0;
+let customBox = null;    // 自定义标签输入框 {stage, sub, x, y}
+let lastPick = null;     // 刚点的叶子（播放生长动画）
 
+// ---------- 布局常量 ----------
+const L = {
+  areaX: 10, areaH: 34,
+  jointX: 150,          // 记录节点
+  stage0X: 205,         // 第一个阶段节点
+  stageGap: 150,
+  leafOff: 42,          // 叶子列相对阶段节点的偏移
+  leafGap: 24,
+  nodeTop: 26,          // 节点上方留白
+  rowPad: 10,
+};
+
+const CATC = {
+  area: '#3f6b4a', symptom: '#c07a4e', env: '#3f8ba6',
+  mood: '#9a6b4a', coping: '#7b6aa8', relief: '#4f7f52',
+};
+
+const STAGES = [
+  { key: 'area',    q: '哪里不舒服？',      n: '部位' },
+  { key: 'symptom', q: '是什么感觉？',      n: '感觉' },
+  { key: 'trigger', q: '可能因为什么？',    n: '触发' },
+  { key: 'coping',  q: '后来怎么缓解的？',  n: '缓解' },
+  { key: 'relief',  q: '有缓解吗？',        n: '效果' },
+];
+
+// ============================================================
+// 存储
+// ============================================================
 function loadRecords() {
   try {
     const raw = localStorage.getItem(STORE_KEY);
@@ -28,10 +62,10 @@ function saveRecords() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(records)); } catch (_) {}
 }
 
-// ---------- 工具 ----------
-function uid() {
-  return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-}
+// ============================================================
+// 工具
+// ============================================================
+function uid() { return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 function pad2(n) { return String(n).padStart(2, '0'); }
 function fmtTime(ts) {
   const d = new Date(ts);
@@ -41,355 +75,776 @@ function fmtShort(ts) {
   const d = new Date(ts);
   return `${d.getMonth() + 1}月${d.getDate()}日`;
 }
+function fmtHM(ts) { const d = new Date(ts); return `${d.getHours()}:${pad2(d.getMinutes())}`; }
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
+// 粗略估算文本宽度（CJK 按字号全宽）
+function tw(s, fs) {
+  fs = fs || 12;
+  let w = 0;
+  for (const ch of String(s)) w += /[\u2e80-\u9fff\uff00-\uffef]/.test(ch) ? fs : fs * 0.56;
+  return w;
+}
+function trunc(s, n) { s = String(s); return s.length > n ? s.slice(0, n) + '…' : s; }
+function seg(a, b, bow) {
+  const mx = (a.x + b.x) / 2;
+  return `M${a.x} ${a.y} Q${mx} ${(a.y + b.y) / 2 + bow} ${b.x} ${b.y}`;
+}
+function sevColor(s) { return s === 'light' ? '#9ec4a2' : s === 'heavy' ? '#d1705f' : '#e0a83c'; }
 
-// ---------- 视图切换 ----------
-document.querySelectorAll('.tab').forEach((b) => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('active', x === b));
-    const v = b.dataset.view;
-    $('viewRecord').hidden = v !== 'record';
-    $('viewGrove').hidden = v !== 'grove';
-    $('viewPattern').hidden = v !== 'pattern';
-    if (v === 'grove') renderGrove();
-    if (v === 'pattern') renderPatterns();
-    window.scrollTo(0, 0);
+// ============================================================
+// 选项表
+// ============================================================
+function customUsed(cat) {
+  const set = new Set();
+  if (cat === 'area' || cat === 'relief') return [];
+  records.forEach((r) => {
+    const arr = cat === 'symptom' ? r.symptoms
+      : cat === 'trigger' ? [...r.env, ...r.mood]
+        : cat === 'coping' ? r.copings : [];
+    arr.forEach((x) => { if (typeof x === 'string' && x.indexOf('custom:') === 0) set.add(x); });
   });
-});
+  return [...set];
+}
+function stageOptions(key) {
+  let base = [];
+  if (key === 'area') base = ONTOLOGY.areas.map((o) => ({ ...o, cat: 'area' }));
+  else if (key === 'symptom') base = ONTOLOGY.symptoms.map((o) => ({ ...o, cat: 'symptom' }));
+  else if (key === 'trigger') base = ONTOLOGY.env.map((o) => ({ ...o, cat: 'env' }))
+    .concat(ONTOLOGY.mood.map((o) => ({ ...o, cat: 'mood' })));
+  else if (key === 'coping') base = ONTOLOGY.copings.map((o) => ({ ...o, cat: 'coping' }));
+  else if (key === 'relief') base = RELIEF.map((o) => ({ ...o, cat: 'relief' }));
+  const custom = customUsed(key).map((id) => ({
+    id, zh: id.slice(7), en: 'custom', cat: key === 'trigger' ? 'env' : key,
+  }));
+  return base.concat(custom);
+}
+function freqMap(cat) {
+  const f = {};
+  records.forEach((r) => {
+    let arr = [];
+    if (cat === 'area') arr = [r.area];
+    else if (cat === 'symptom') arr = r.symptoms;
+    else if (cat === 'env') arr = r.env;
+    else if (cat === 'mood') arr = r.mood;
+    else if (cat === 'coping') arr = r.copings;
+    arr.forEach((x) => { if (x) f[x] = (f[x] || 0) + 1; });
+  });
+  return f;
+}
+// 候选排序：自己身上出现过的排前面（低负担）
+function orderedOptions(key) {
+  const opts = stageOptions(key);
+  if (key === 'trigger') {
+    const fe = freqMap('env'), fm = freqMap('mood');
+    const env = opts.filter((o) => o.cat === 'env').sort((a, b) => (fe[b.id] || 0) - (fe[a.id] || 0));
+    const mood = opts.filter((o) => o.cat === 'mood').sort((a, b) => (fm[b.id] || 0) - (fm[a.id] || 0));
+    return env.concat(mood);
+  }
+  const f = freqMap(key);
+  return opts.slice().sort((a, b) => (f[b.id] || 0) - (f[a.id] || 0));
+}
+function findOption(stageKey, id, sub) {
+  const list = stageOptions(stageKey);
+  const hit = list.find((o) => o.id === id);
+  if (hit) return hit;
+  if (id && id.indexOf('custom:') === 0) {
+    return { id, zh: id.slice(7), en: 'custom', cat: stageKey === 'trigger' ? (sub || 'env') : stageKey };
+  }
+  return { id, zh: id, en: id, cat: stageKey };
+}
 
-// ---------- 录入：三段式 ----------
-$('startBtn').addEventListener('click', () => {
-  draft = {
-    id: uid(),
-    ts: Date.now(),
-    area: '', symptoms: [], emotions: [], severity: 'medium',
-    env: [], mood: [], copings: [], relief: 'pending', note: '',
+// ============================================================
+// 生长状态机
+// ============================================================
+function startGrowth(areaId) {
+  pending = {
+    area: areaId || '',
+    loose: !areaId,          // 从地面新芽长出来的：先不归到任何一棵树上
+    chain: areaId ? ['symptom', 'trigger', 'coping', 'relief']
+      : ['area', 'symptom', 'trigger', 'coping', 'relief'],
+    stageKey: areaId ? 'symptom' : 'area',
+    symptoms: [], env: [], mood: [], copings: [],
+    relief: '', severity: 'medium', emotions: [],
+    ts: Date.now(), note: '',
+    picked: [], open: {}, expanded: {},
   };
-  step = 1;
-  openDrawer();
-});
-
-function openDrawer() {
-  $('drawerMask').hidden = false;
-  renderStep();
-  updateStepsBar();
+  pending.open[pending.stageKey] = true;
+  customBox = null;
+  switchView('grove');
+  renderAll();
+  setTimeout(() => scrollToPending(), 60);
 }
-function closeDrawer() {
-  $('drawerMask').hidden = true;
-  draft = null;
+function cancelGrowth() {
+  pending = null; customBox = null;
+  renderAll();
 }
-
-function updateStepsBar() {
-  document.querySelectorAll('.step').forEach((s) => {
-    const n = +s.dataset.s;
-    s.classList.toggle('active', n === step);
-    s.classList.toggle('done', n < step);
+function isPicked(stageKey, id) {
+  return pending.picked.some((p) => p.stage === stageKey && p.id === id);
+}
+function pickOption(stageKey, id, sub) {
+  const p = pending;
+  if (!p) return;
+  if (stageKey === 'area') {
+    p.area = id;
+    p.stageKey = p.chain[1];
+    p.open[p.stageKey] = true;
+  } else if (stageKey === 'symptom') {
+    if (!p.symptoms.includes(id)) p.symptoms.push(id);
+  } else if (stageKey === 'trigger') {
+    const arr = sub === 'mood' ? p.mood : p.env;
+    if (!arr.includes(id)) arr.push(id);
+  } else if (stageKey === 'coping') {
+    if (!p.copings.includes(id)) p.copings.push(id);
+  } else if (stageKey === 'relief') {
+    p.relief = id;
+  }
+  p.picked.push({ stage: stageKey, id, sub: sub || '' });
+  lastPick = stageKey + '|' + id;
+  // 只有点当前阶段的叶子才会让枝条继续往外长
+  const i = p.chain.indexOf(stageKey);
+  if (i >= 0 && i === p.chain.indexOf(p.stageKey)) {
+    const nx = p.chain[i + 1];
+    if (nx) { p.stageKey = nx; p.open[nx] = true; }
+    else { commitPending(); return; }
+  }
+  renderAll();
+  scrollToStage();
+}
+function skipStage(stageKey) {
+  const p = pending;
+  if (!p) return;
+  if (stageKey === 'relief') { p.relief = 'pending'; commitPending(); return; }
+  const i = p.chain.indexOf(stageKey);
+  const nx = p.chain[i + 1];
+  if (nx) { p.stageKey = nx; p.open[nx] = true; }
+  renderAll();
+  scrollToStage();
+}
+function commitPending() {
+  const p = pending;
+  if (!p) return;
+  records.push({
+    id: uid(), ts: p.ts, area: p.area,
+    symptoms: p.symptoms.slice(), emotions: p.emotions.slice(),
+    severity: p.severity,
+    env: p.env.slice(), mood: p.mood.slice(),
+    copings: p.copings.slice(), relief: p.relief, note: p.note,
   });
-  document.querySelectorAll('.step-line').forEach((l, i) => {
-    l.classList.toggle('done', i + 1 < step);
+  saveRecords();
+  pending = null; customBox = null;
+  renderAll();
+  showToast('记下了 🌱 你的归因林又长了一根枝条');
+}
+
+// ---------- 生长中的列内容 ----------
+function pendingColumn(stage) {
+  const items = [];
+  pending.picked.filter((p) => p.stage === stage.key).forEach((p) => {
+    const o = findOption(stage.key, p.id, p.sub);
+    items.push({ id: o.id, zh: o.zh, en: o.en, cat: o.cat, picked: true });
   });
-  $('backBtn').hidden = step === 1;
-  $('nextBtn').textContent = step === 3 ? '记下来' : '下一步';
+  if (!pending.open[stage.key]) return items;
+  const all = orderedOptions(stage.key);
+  const unpicked = all.filter((o) => !isPicked(stage.key, o.id));
+  const expanded = !!pending.expanded[stage.key];
+  const limit = expanded ? unpicked.length : Math.min(6, unpicked.length);
+  unpicked.slice(0, limit).forEach((o) => {
+    items.push({ id: o.id, zh: o.zh, en: o.en, cat: o.cat, ghost: true });
+  });
+  if (!expanded && unpicked.length > limit) {
+    items.push({ special: 'more', zh: '更多…', ghost: true, cat: stage.key });
+  }
+  const has = pending.picked.some((p) => p.stage === stage.key);
+  if (!has && (stage.key === 'trigger' || stage.key === 'coping' || stage.key === 'relief')) {
+    items.push({ special: 'skip', zh: '先跳过', ghost: true, cat: stage.key });
+  }
+  if (stage.key !== 'relief') {
+    items.push({ special: 'custom', zh: '＋ 自己写一个', ghost: true, cat: stage.key });
+  }
+  return items;
+}
+function pendingCols() {
+  const stages = pending.chain.map((k) => {
+    const s = STAGES.find((x) => x.key === k);
+    return { ...s, x: L.stage0X + pending.chain.indexOf(k) * L.stageGap };
+  });
+  const cols = {};
+  stages.forEach((s) => { cols[s.key] = { stage: s, x: s.x + L.leafOff, items: pendingColumn(s) }; });
+  return { stages, cols };
+}
+function pendingBand() {
+  const { cols } = pendingCols();
+  let max = 1;
+  Object.values(cols).forEach((c) => { if (c.items.length > max) max = c.items.length; });
+  return L.nodeTop + max * L.leafGap + L.rowPad + 10;
 }
 
-function renderStep() {
-  const body = $('drawerBody');
-  if (step === 1) body.innerHTML = step1HTML();
-  else if (step === 2) body.innerHTML = step2HTML();
-  else body.innerHTML = step3HTML();
-  wireStep();
-}
+// ============================================================
+// 渲染：树林
+// ============================================================
+function renderGrove() {
+  const svg = $('groveSvg');
+  if (!svg) return;
+  const links = [];    // 枝干
+  const threads = [];  // 规律线
+  const nodes = [];    // 可点元素
 
-// —— 通用 chip 组（多选）——
-function chipGroup(field, list, cls, onPick, grid) {
-  const wrap = document.createElement('div');
-  wrap.className = 'chips' + (grid ? ' grid' : '');
-  list.forEach((it) => {
-    const b = document.createElement('button');
-    b.className = 'chip' + (cls ? ' ' + cls : '') +
-      (draft[field].includes(it.id) ? ' on' : '');
-    b.innerHTML = `${esc(it.zh)}<span class="en">${esc(it.en)}</span>`;
-    b.addEventListener('click', () => {
-      const arr = draft[field];
-      const i = arr.indexOf(it.id);
-      if (i >= 0) arr.splice(i, 1); else arr.push(it.id);
-      b.classList.toggle('on');
-      if (onPick) onPick();
+  let y = 26;
+
+  // —— 按部位分组 ——
+  const byArea = {};
+  records.forEach((r) => {
+    const k = r.area || 'diffuse';
+    (byArea[k] = byArea[k] || []).push(r);
+  });
+
+  const blocks = [];
+  Object.keys(byArea).forEach((k) => {
+    const rows = byArea[k].sort((a, b) => a.ts - b.ts);
+    const b = layoutBlock(k, rows, y, !!(pending && !pending.loose && pending.area === k));
+    blocks.push(b);
+    y = b.bottom + 24;
+  });
+
+  // —— 还没归属的待生长枝 ——
+  let loose = null;
+  if (pending && pending.loose) {
+    loose = layoutLoosePending(y);
+    y = loose.bottom;
+  }
+
+  // —— 渲染各块 ——
+  blocks.forEach((b) => renderBlock(b, links, threads, nodes));
+  if (loose) renderLoosePending(loose, links, nodes);
+
+  // —— 地面 + 新芽 ——
+  const groundY = y + 14;
+  let W = 800;
+  blocks.forEach((b) => { W = Math.max(W, 780); });
+  if (loose) W = Math.max(W, loose.right);
+  if (pending) W = Math.max(W, L.stage0X + pending.chain.length * L.stageGap + L.leafOff + 130);
+
+  const H = groundY + 96;
+  svgW = W;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('width', W * zoom);
+  svg.setAttribute('height', H * zoom);
+
+  let out = '';
+  // 地面线
+  out += `<path d="M0 ${groundY} L${W} ${groundY}" stroke="#dbe7dc" stroke-width="1.5" stroke-dasharray="2 6"/>`;
+  // 规律线（跨发作）
+  threads.forEach((t) => {
+    out += `<path d="M${t.x} ${t.y1} L${t.x} ${t.y2}" stroke="${t.c}" stroke-width="1.4"
+      stroke-dasharray="1 3" opacity=".38" fill="none"/>`;
+    t.dots.forEach((d) => {
+      out += `<circle cx="${t.x}" cy="${d}" r="2" fill="${t.c}" opacity=".45"/>`;
     });
-    wrap.appendChild(b);
   });
-  return wrap;
+  // 枝干
+  links.forEach((l) => {
+    out += `<path d="${l.d}" class="${l.cls}" fill="none" stroke="${l.c || '#c3d4c5'}"
+      stroke-width="${l.w || 1.4}" opacity="${l.o == null ? 1 : l.o}"
+      stroke-dasharray="${l.dash || ''}" stroke-linecap="round"/>`;
+  });
+  // 节点
+  nodes.forEach((n) => { out += n; });
+
+  // —— 新芽（长一根新枝）——
+  out += `<g class="node sprout" data-act="bud" data-area="">
+    <path d="M44 ${groundY} C44 ${groundY - 14} 50 ${groundY - 20} 56 ${groundY - 22}"
+      fill="none" stroke="#6b9c6e" stroke-width="2" stroke-linecap="round"/>
+    <path d="M50 ${groundY - 18} C50 ${groundY - 24} 55 ${groundY - 28} 60 ${groundY - 28}
+      C60 ${groundY - 22} 55 ${groundY - 18} 50 ${groundY - 18}z" fill="#a9cba6"/>
+    <circle cx="44" cy="${groundY - 30}" r="11" fill="#fff" stroke="#3f6b4a" stroke-width="1.6"/>
+    <path d="M40 ${groundY - 30} L48 ${groundY - 30} M44 ${groundY - 34} L44 ${groundY - 26}"
+      stroke="#3f6b4a" stroke-width="1.8" stroke-linecap="round"/>
+    <text class="nlabel" x="${64}" y="${groundY - 26}" fill="#3f6b4a">长一根新枝</text>
+  </g>`;
+
+  // —— 自定义标签输入 ——
+  if (customBox) {
+    const cb = customBox;
+    out += `<foreignObject x="${cb.x}" y="${cb.y}" width="250" height="72">
+      <div xmlns="http://www.w3.org/1999/xhtml" class="cf-wrap">
+        ${cb.stage === 'trigger' ? `
+          <div class="cf-sub">
+            <span class="cf-sub-b ${cb.sub === 'env' ? 'on' : ''}" data-sub="env">环境</span>
+            <span class="cf-sub-b ${cb.sub === 'mood' ? 'on' : ''}" data-sub="mood">心情</span>
+          </div>` : ''}
+        <input class="cf-in" id="cfInput" type="text" maxlength="12" placeholder="写一个标签，回车确认" />
+      </div>
+    </foreignObject>`;
+  }
+
+  svg.innerHTML = out;
+  wireGrove();
 }
 
-// —— 通用 chip 组（单选）——
-function chipRadio(field, list, cls, onPick, grid) {
-  const wrap = document.createElement('div');
-  wrap.className = 'chips' + (grid ? ' grid' : '');
-  list.forEach((it) => {
-    const b = document.createElement('button');
-    b.className = 'chip' + (cls ? ' ' + cls : '') +
-      (draft[field] === it.id ? ' on' : '');
-    b.innerHTML = `${esc(it.zh)}<span class="en">${esc(it.en)}</span>`;
-    b.addEventListener('click', () => {
-      draft[field] = it.id;
-      wrap.querySelectorAll('.chip').forEach((x) => x.classList.remove('on'));
-      b.classList.add('on');
-      if (onPick) onPick();
-    });
-    wrap.appendChild(b);
+// ---------- 布局 ----------
+function rowBand(r) {
+  const n = Math.max(r.symptoms.length, r.env.length + r.mood.length, r.copings.length, 1);
+  return L.nodeTop + n * L.leafGap + L.rowPad;
+}
+function layoutBlock(areaKey, rows, top, withPending) {
+  const items = [];
+  let cursor = top;
+  rows.forEach((r) => {
+    const h = rowBand(r);
+    items.push({ type: 'rec', r, y: cursor + L.nodeTop, h });
+    cursor += h + L.rowPad;
   });
-  return wrap;
+  if (withPending) {
+    const h = pendingBand();
+    items.push({ type: 'pending', y: cursor + L.nodeTop, h });
+    cursor += h + L.rowPad;
+  }
+  const areaY = items.length ? (items[0].y + items[items.length - 1].y) / 2 : top + 20;
+  return { areaKey, items, top, bottom: cursor, areaY };
+}
+function layoutLoosePending(top) {
+  const h = pendingBand();
+  return { y: top + L.nodeTop, h, bottom: top + h + L.rowPad, right: L.stage0X + pending.chain.length * L.stageGap + 200 };
 }
 
-// —— 自定义标签 ——
-function customAdd(field, cls, onAdd) {
-  const wrap = document.createElement('div');
-  wrap.className = 'chip-wrap';
-  const inp = document.createElement('input');
-  inp.className = 'chip-in';
-  inp.placeholder = '自己写一个…';
-  inp.maxLength = 12;
-  const btn = document.createElement('button');
-  btn.className = 'chip-add';
-  btn.textContent = '+ 自定义';
-  const commit = () => {
-    const v = inp.value.trim();
-    if (!v) return;
-    const id = 'custom:' + v;
-    if (!draft[field].includes(id)) {
-      draft[field].push(id);
-      const b = document.createElement('button');
-      b.className = 'chip on' + (cls ? ' ' + cls : '');
-      b.innerHTML = `${esc(v)}<span class="en">custom</span>`;
-      b.addEventListener('click', () => {
-        const i = draft[field].indexOf(id);
-        if (i >= 0) draft[field].splice(i, 1);
-        b.classList.toggle('on');
-        if (onAdd) onAdd();
+// ---------- 渲染一个块 ----------
+function renderBlock(b, links, threads, nodes) {
+  const label = zh(ONTOLOGY.areas, b.areaKey);
+  const pillW = Math.max(92, tw(label, 13) + 30);
+  const pillRight = L.areaX + pillW;
+
+  // 部位牌
+  nodes.push(`<g class="node area-pill" data-act="area" data-area="${b.areaKey}">
+    <rect class="nbox" x="${L.areaX}" y="${b.areaY - 17}" width="${pillW}" height="34" rx="11"
+      fill="#3f6b4a" stroke="#2f5638" stroke-width="1"/>
+    <text class="nlabel" x="${L.areaX + 13}" y="${b.areaY - 2}" fill="#fff">${esc(label)}</text>
+    <text class="nsub" x="${L.areaX + 13}" y="${b.areaY + 12}" fill="#b9d3bd">${b.items.filter((i) => i.type === 'rec').length} 次</text>
+  </g>`);
+  // 长新枝的芽
+  nodes.push(`<g class="node bud" data-act="bud" data-area="${b.areaKey}">
+    <circle class="nbox" cx="${pillRight}" cy="${b.areaY - 15}" r="9" fill="#fff" stroke="#3f6b4a" stroke-width="1.6"/>
+    <path d="M${pillRight - 4} ${b.areaY - 15} L${pillRight + 4} ${b.areaY - 15} M${pillRight} ${b.areaY - 19} L${pillRight} ${b.areaY - 11}"
+      stroke="#3f6b4a" stroke-width="1.7" stroke-linecap="round"/>
+  </g>`);
+
+  // 收集每类叶子的位置，用于规律线
+  const leafPos = { symptom: [], env: [], mood: [], coping: [] };
+
+  b.items.forEach((it) => {
+    if (it.type === 'rec') {
+      // 部位 → 记录节点的枝
+      links.push({ d: seg({ x: pillRight, y: b.areaY }, { x: L.jointX, y: it.y }, 6), c: '#c3d4c5', w: 1.6 });
+      renderRecRow(it.r, it.y, links, nodes, leafPos);
+    } else {
+      links.push({
+        d: seg({ x: pillRight, y: b.areaY }, { x: L.jointX, y: it.y }, 6),
+        c: '#6b9c6e', w: 1.8, dash: '4 4', o: .75,
       });
-      wrap.insertBefore(b, btn);
-      if (onAdd) onAdd();
+      renderPendingRow(it.y, links, nodes);
     }
-    inp.value = '';
-    inp.focus();
-  };
-  btn.addEventListener('click', commit);
-  inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); } });
-  wrap.append(inp, btn);
-  return wrap;
-}
+  });
 
-// —— 第 1 步：感觉 ——
-function step1HTML() {
-  const div = document.createElement('div');
-  div.innerHTML = `
-    <div class="q-head">现在感觉怎么样？</div>
-    <div class="q-sub">先说身体哪儿不舒服，再说说是什么感觉。可以只选最贴近的。</div>
-    <div class="q-block">
-      <div class="q-label">身体部位 <span class="opt">必选</span></div>
-      <div id="areaBox"></div>
-    </div>
-    <div class="q-block">
-      <div class="q-label">是什么感觉 <span class="opt">可多选</span></div>
-      <div id="symBox"></div>
-    </div>
-    <div class="q-block">
-      <button class="fold-toggle" id="emoFold" type="button">
-        <span class="arrow">›</span><span class="fold-txt">这次的情绪 · 选填</span>
-      </button>
-      <div class="fold-body" id="emoBody"></div>
-    </div>
-    <div class="q-block">
-      <div class="q-label">有多难受 <span class="opt">必选</span></div>
-      <div id="sevBox"></div>
-    </div>
-    <div class="q-block">
-      <div class="q-label">什么时候开始</div>
-      <div class="time-row" id="timeRow"></div>
-    </div>`;
-  return div.innerHTML;
-}
-
-// —— 第 2 步：触发 ——
-function step2HTML() {
-  const div = document.createElement('div');
-  div.innerHTML = `
-    <div class="q-head">你觉得是什么引起的？</div>
-    <div class="q-sub">凭直觉选就好，不用确定。选不出来也可以直接跳过——先记下来，之后再补。</div>
-    <div class="q-block">
-      <div class="q-label">环境因素 <span class="opt">可多选</span></div>
-      <div id="envBox"></div>
-    </div>
-    <div class="q-block">
-      <div class="q-label">心情因素 <span class="opt">可多选</span></div>
-      <div id="moodBox"></div>
-    </div>
-    <div class="q-block">
-      <div class="q-label">还想说点什么 <span class="opt">选填</span></div>
-      <textarea class="note-in" id="noteIn" placeholder="比如：那天刚好赶上一个 deadline…"></textarea>
-      <div class="hint">写多写少都可以。一句话也算。</div>
-    </div>`;
-  return div.innerHTML;
-}
-
-// —— 第 3 步：缓解 ——
-function step3HTML() {
-  const div = document.createElement('div');
-  div.innerHTML = `
-    <div class="q-head">后来怎么好一些的？</div>
-    <div class="q-sub">记下当时做了什么、有没有用。这些以后会变成你的「有效清单」。</div>
-    <div class="q-block">
-      <div class="q-label">做了什么 <span class="opt">可多选</span></div>
-      <div id="copeBox"></div>
-    </div>
-    <div class="q-block">
-      <div class="q-label">效果如何 <span class="opt">必选</span></div>
-      <div id="reliefBox"></div>
-    </div>
-    <div class="q-block">
-      <div class="q-label">回看这条记录</div>
-      <div id="reviewBox"></div>
-    </div>`;
-  return div.innerHTML;
-}
-
-function wireStep() {
-  if (step === 1) {
-    $('areaBox').appendChild(chipRadio('area', ONTOLOGY.areas, '', updateNextEnabled, true));
-    $('symBox').appendChild(chipGroup('symptoms', ONTOLOGY.symptoms, '', updateNextEnabled));
-    // 情绪：默认折叠，降低初始选择负担
-    const emoBody = $('emoBody');
-    emoBody.appendChild(chipGroup('emotions', ONTOLOGY.emotions));
-    const fold = $('emoFold');
-    fold.addEventListener('click', () => {
-      const open = emoBody.classList.toggle('show');
-      fold.classList.toggle('open', open);
-      fold.querySelector('.fold-txt').textContent = open ? '这次的情绪' : '这次的情绪 · 选填';
-    });
-    const sevBox = $('sevBox');
-    const sw = document.createElement('div');
-    sw.className = 'chips';
-    SEVERITY.forEach((s) => {
-      const b = document.createElement('button');
-      b.className = 'chip' + (draft.severity === s.id ? ' on' : '');
-      b.textContent = s.zh;
-      b.addEventListener('click', () => {
-        draft.severity = s.id;
-        sw.querySelectorAll('.chip').forEach((x) => x.classList.remove('on'));
-        b.classList.add('on');
+  // 规律线：同标签的叶子连起来
+  ['symptom', 'env', 'mood', 'coping'].forEach((cat) => {
+    const groups = {};
+    leafPos[cat].forEach((p) => { (groups[p.label] = groups[p.label] || []).push(p); });
+    Object.keys(groups).forEach((k) => {
+      const g = groups[k];
+      if (g.length < 2) return;
+      const ys = g.map((p) => p.y);
+      threads.push({
+        x: g[0].x - 11, y1: Math.min.apply(null, ys), y2: Math.max.apply(null, ys),
+        c: CATC[cat], dots: ys,
       });
-      sw.appendChild(b);
     });
-    sevBox.appendChild(sw);
+  });
+}
 
-    // 时间
-    const now = Date.now();
-    const opts = [
-      { label: '就是现在', ts: now },
-      { label: '今天早些时候', ts: now - 3 * 3600e3 },
-      { label: '今天早上', ts: now - 8 * 3600e3 },
-      { label: '昨天', ts: now - 24 * 3600e3 },
-      { label: '更早', ts: now - 72 * 3600e3 },
-    ];
-    const row = $('timeRow');
-    opts.forEach((o, i) => {
-      const b = document.createElement('button');
-      b.className = 'time-btn' + (i === 0 ? ' on' : '');
-      b.textContent = o.label;
-      b.addEventListener('click', () => {
-        draft.ts = o.ts;
-        row.querySelectorAll('.time-btn').forEach((x) => x.classList.remove('on'));
-        b.classList.add('on');
-      });
-      row.appendChild(b);
-    });
-  } else if (step === 2) {
-    $('envBox').appendChild(chipGroup('env', ONTOLOGY.env, 'env'));
-    $('envBox').appendChild(customAdd('env', 'env'));
-    $('moodBox').appendChild(chipGroup('mood', ONTOLOGY.mood, 'mood'));
-    $('moodBox').appendChild(customAdd('mood', 'mood'));
-    $('noteIn').value = draft.note || '';
-    $('noteIn').addEventListener('input', (e) => { draft.note = e.target.value; });
-  } else {
-    $('copeBox').appendChild(chipGroup('copings', ONTOLOGY.copings, 'cope', refreshReview));
-    $('copeBox').appendChild(customAdd('copings', 'cope', refreshReview));
-    const rBox = $('reliefBox');
-    const sw = document.createElement('div');
-    sw.className = 'chips';
-    RELIEF.forEach((r) => {
-      const b = document.createElement('button');
-      b.className = 'chip' + (draft.relief === r.id ? ' on' : '');
-      b.innerHTML = `${esc(r.zh)}<span class="en">${esc(r.en)}</span>`;
-      b.addEventListener('click', () => {
-        draft.relief = r.id;
-        sw.querySelectorAll('.chip').forEach((x) => x.classList.remove('on'));
-        b.classList.add('on');
-      });
-      sw.appendChild(b);
-    });
-    rBox.appendChild(sw);
-
-    refreshReview();
+// ---------- 已长成的记录行 ----------
+function renderRecRow(r, nodeY, links, nodes, leafPos) {
+  const sev = sevColor(r.severity);
+  const chain = [L.jointX, 205, 355, 505, 655].map((x) => ({ x, y: nodeY }));
+  for (let i = 0; i < chain.length - 1; i++) {
+    links.push({ d: seg(chain[i], chain[i + 1], i % 2 ? 6 : -6), c: '#d6e3d7', w: 1.3 });
   }
-  updateNextEnabled();
+  // 记录节点
+  nodes.push(`<g class="node rec-joint" data-act="detail" data-rec="${r.id}">
+    <circle class="nbox" cx="${L.jointX}" cy="${nodeY}" r="6.5" fill="${sev}" stroke="#fff" stroke-width="2"/>
+    <text class="nsub" x="${L.jointX}" y="${nodeY - 14}" text-anchor="middle" fill="#8b9a91">${fmtShort(r.ts)}</text>
+  </g>`);
+
+  // 阶段节点
+  [205, 355, 505, 655].forEach((x) => {
+    nodes.push(`<circle class="stage-dot" cx="${x}" cy="${nodeY}" r="3.5" fill="#cddccf"/>`);
+  });
+
+  // 症状叶子
+  r.symptoms.forEach((s, i) => {
+    const y = nodeY + 18 + i * L.leafGap;
+    links.push({ d: seg({ x: 205, y: nodeY }, { x: 247, y }, 3), c: '#e6cdb8', w: 1.1 });
+    nodes.push(leafSVG({ zh: zh(ONTOLOGY.symptoms, s), cat: 'symptom', picked: true }, 247, y, 'detail', { rec: r.id }));
+    leafPos.symptom.push({ label: zh(ONTOLOGY.symptoms, s), x: 247, y });
+  });
+
+  // 触发叶子（环境 + 心情）
+  const trig = r.env.map((e) => ({ id: e, cat: 'env', zh: zh(ONTOLOGY.env, e) }))
+    .concat(r.mood.map((e) => ({ id: e, cat: 'mood', zh: zh(ONTOLOGY.mood, e) })));
+  trig.forEach((t, i) => {
+    const y = nodeY + 18 + i * L.leafGap;
+    links.push({ d: seg({ x: 355, y: nodeY }, { x: 397, y }, 3), c: t.cat === 'env' ? '#cfe1e9' : '#e5d3c4', w: 1.1 });
+    nodes.push(leafSVG({ ...t, picked: true }, 397, y, 'detail', { rec: r.id }));
+    leafPos[t.cat].push({ label: t.zh, x: 397, y });
+  });
+
+  // 缓解叶子
+  r.copings.forEach((c, i) => {
+    const y = nodeY + 18 + i * L.leafGap;
+    links.push({ d: seg({ x: 505, y: nodeY }, { x: 547, y }, 3), c: '#dcd3ec', w: 1.1 });
+    nodes.push(leafSVG({ zh: zh(ONTOLOGY.copings, c), cat: 'coping', picked: true }, 547, y, 'detail', { rec: r.id }));
+    leafPos.coping.push({ label: zh(ONTOLOGY.copings, c), x: 547, y });
+  });
+
+  // 效果
+  const rel = RELIEF.find((x) => x.id === r.relief) || RELIEF[3];
+  nodes.push(`<g class="node relief-badge" data-act="detail" data-rec="${r.id}">
+    <rect class="nbox" x="${697}" y="${nodeY - 10}" width="${Math.max(56, tw(rel.zh, 11) + 18)}" height="20" rx="10"
+      fill="#eef4ee" stroke="#9dbca2" stroke-width="1.1"/>
+    <text class="nlabel" x="${697 + 9}" y="${nodeY + 4}" fill="#4f7f52" font-size="11">${esc(rel.zh)}</text>
+  </g>`);
 }
 
-// —— 第 3 步的「回看」区，随选择实时刷新 ——
-function refreshReview() {
-  const rv = $('reviewBox');
-  if (!rv) return;
-  const sevZh = (SEVERITY.find((s) => s.id === draft.severity) || SEVERITY[1]).zh;
-  const lines = [
-    ['部位', zh(ONTOLOGY.areas, draft.area) || '—'],
-    ['感觉', draft.symptoms.map((x) => zh(ONTOLOGY.symptoms, x)).join('、') || '—'],
-    ['情绪', draft.emotions.map((x) => zh(ONTOLOGY.emotions, x)).join('、') || '—'],
-    ['程度', sevZh],
-    ['触发', [...draft.env.map((x) => zh(ONTOLOGY.env, x)),
-               ...draft.mood.map((x) => zh(ONTOLOGY.mood, x))].join('、') || '未记录'],
-    ['缓解', draft.copings.map((x) => zh(ONTOLOGY.copings, x)).join('、') || '未记录'],
+// ---------- 正在生长的枝 ----------
+function renderPendingRow(nodeY, links, nodes) {
+  const { stages, cols } = pendingCols();
+  const cur = pending.stageKey;
+  const curIdx = stages.findIndex((s) => s.key === cur);
+
+  const pts = [{ x: L.jointX, y: nodeY }].concat(stages.map((s) => ({ x: s.x, y: nodeY })));
+  for (let i = 0; i < pts.length - 1; i++) {
+    const solid = curIdx >= 0 ? i <= curIdx : true;
+    links.push({
+      d: seg(pts[i], pts[i + 1], i % 2 ? 7 : -7),
+      c: solid ? '#7fb083' : '#dde7de', w: solid ? 2 : 1.4, dash: solid ? '' : '3 5',
+    });
+  }
+
+  // 生长中的记录节点
+  nodes.push(`<g class="node pend-joint" data-act="annotate" data-x="${L.jointX}" data-y="${nodeY}">
+    <circle class="nbox pulse" cx="${L.jointX}" cy="${nodeY}" r="8" fill="#fff" stroke="#3f6b4a" stroke-width="2"/>
+    <circle cx="${L.jointX}" cy="${nodeY}" r="3" fill="#3f6b4a"/>
+    <text class="nsub" x="${L.jointX}" y="${nodeY - 15}" text-anchor="middle" fill="#3f6b4a">${fmtShort(pending.ts)} ${fmtHM(pending.ts)}</text>
+    <text class="nsub" x="${L.jointX}" y="${nodeY + 22}" text-anchor="middle" fill="#9fb0a4">${sevWord(pending.severity)} · ＋细节</text>
+  </g>`);
+
+  stages.forEach((s) => {
+    const active = s.key === cur;
+    nodes.push(`<circle class="stage-dot ${active ? 'on' : ''}" cx="${s.x}" cy="${nodeY}" r="${active ? 6 : 3.5}"
+      fill="${active ? '#3f6b4a' : '#cddccf'}"/>`);
+    // 已过阶段可以重新打开（补选）
+    if (pending.loose && s.key === 'area' && pending.area) return;
+    if (!active && cols[s.key].items.some((i) => i.picked)) {
+      nodes.push(`<g class="node re-open" data-act="open" data-stage="${s.key}">
+        <circle class="nbox" cx="${s.x}" cy="${nodeY - 15}" r="7.5" fill="#fff" stroke="#a9bfae" stroke-width="1.4"/>
+        <path d="M${s.x - 3.5} ${nodeY - 15} L${s.x + 3.5} ${nodeY - 15} M${s.x} ${nodeY - 18.5} L${s.x} ${nodeY - 11.5}"
+          stroke="#6b9c6e" stroke-width="1.5" stroke-linecap="round"/>
+      </g>`);
+    }
+  });
+
+  // 各阶段的叶子
+  stages.forEach((s) => {
+    const col = cols[s.key];
+    const active = s.key === cur;
+    // 散枝选定部位后，部位已由左侧的牌显示，枝上不再重复挂一次
+    if (pending.loose && s.key === 'area' && pending.area) return;
+    col.items.forEach((it, i) => {
+      const y = nodeY + 18 + i * L.leafGap;
+      const picked = !!it.picked;
+      links.push({
+        d: seg({ x: s.x, y: nodeY }, { x: col.x, y }, 3),
+        c: picked ? (CATC[it.cat] || '#cddccf') : '#e4ece5',
+        w: picked ? 1.4 : 1, o: picked ? .85 : .7, dash: picked ? '' : '2 3',
+      });
+      const act = it.special || 'pick';
+      const data = {
+        act,
+        stage: s.key,
+        id: it.id || '',
+        sub: it.cat && (it.cat === 'env' || it.cat === 'mood') ? it.cat : '',
+        x: col.x, y,
+      };
+      const fresh = lastPick === s.key + '|' + it.id ? ' fresh' : '';
+      nodes.push(leafSVG(it, col.x, y, act, data, fresh, !active));
+    });
+  });
+}
+function sevWord(s) {
+  const hit = SEVERITY.find((x) => x.id === s);
+  return hit ? hit.zh : '中';
+}
+
+// ---------- 叶子 ----------
+function leafSVG(o, x, y, act, data, extraCls, faded) {
+  const label = trunc(o.zh || '', 8);
+  const w = Math.max(44, tw(label, 12) + 18);
+  const c = CATC[o.cat] || '#8b9a91';
+  const picked = !!o.picked;
+  const special = o.special;
+  const fill = picked ? tint(c) : '#fff';
+  const stroke = picked ? c : (special ? '#b9c8bd' : c);
+  const dash = picked ? '' : '4 3';
+  const op = (faded && !picked) ? .42 : 1;
+  const cls = `node leaf ${picked ? 'picked' : 'ghost'} ${special ? 'sp-' + special : ''}${extraCls || ''}`;
+  const d = data || {};
+  const attrs = [
+    `data-act="${act}"`,
+    d.stage ? `data-stage="${d.stage}"` : '',
+    d.id ? `data-id="${esc(d.id)}"` : '',
+    d.sub ? `data-sub="${d.sub}"` : '',
+    d.x != null ? `data-x="${d.x}"` : '',
+    d.y != null ? `data-y="${d.y}"` : '',
+    d.rec ? `data-rec="${d.rec}"` : '',
+  ].join(' ');
+  return `<g class="${cls}" ${attrs} opacity="${op}">
+    <rect class="nbox" x="${x}" y="${y - 10}" width="${w}" height="20" rx="10"
+      fill="${fill}" stroke="${stroke}" stroke-width="${picked ? 1.4 : 1.2}" stroke-dasharray="${dash}"/>
+    <text class="nlabel" x="${x + 9}" y="${y + 4}" fill="${picked ? c : (special ? '#9fb0a4' : c)}"
+      font-size="${special ? 11 : 12}">${esc(label)}</text>
+  </g>`;
+}
+function tint(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const mix = (v) => Math.round(v + (255 - v) * 0.88);
+  return `rgb(${mix(r)},${mix(g)},${mix(b)})`;
+}
+
+// ---------- 还没归属的待生长枝 ----------
+function renderLoosePending(b, links, nodes) {
+  const { stages, cols } = pendingCols();
+  if (pending.area) {
+    const label = zh(ONTOLOGY.areas, pending.area);
+    const pillW = Math.max(92, tw(label, 13) + 30);
+    nodes.push(`<g class="node area-pill">
+      <rect class="nbox" x="${L.areaX}" y="${b.y - 17}" width="${pillW}" height="34" rx="11"
+        fill="#3f6b4a" stroke="#2f5638" stroke-width="1"/>
+      <text class="nlabel" x="${L.areaX + 13}" y="${b.y - 2}" fill="#fff">${esc(label)}</text>
+      <text class="nsub" x="${L.areaX + 13}" y="${b.y + 12}" fill="#b9d3bd">新的一枝</text>
+    </g>`);
+    links.push({
+      d: seg({ x: L.areaX + pillW, y: b.y }, { x: L.jointX, y: b.y }, 0),
+      c: '#6b9c6e', w: 1.8, dash: '4 4', o: .8,
+    });
+  } else {
+    nodes.push(`<g class="node area-pill ghost-pill">
+      <rect class="nbox" x="${L.areaX}" y="${b.y - 17}" width="104" height="34" rx="11"
+        fill="#fff" stroke="#c3d4c5" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text class="nlabel" x="${L.areaX + 13}" y="${b.y + 5}" fill="#9fb0a4">选一个部位…</text>
+    </g>`);
+    links.push({
+      d: seg({ x: L.areaX + 104, y: b.y }, { x: L.jointX, y: b.y }, 0),
+      c: '#c3d4c5', w: 1.6, dash: '4 4',
+    });
+  }
+  renderPendingRow(b.y, links, nodes);
+}
+
+// ============================================================
+// 交互接线
+// ============================================================
+function wireGrove() {
+  const svg = $('groveSvg');
+  if (!svg) return;
+  svg.querySelectorAll('.node').forEach((g) => {
+    g.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const act = g.dataset.act;
+      if (act === 'pick') pickOption(g.dataset.stage, g.dataset.id, g.dataset.sub);
+      else if (act === 'more') { pending.expanded[g.dataset.stage] = true; renderAll(); }
+      else if (act === 'skip') skipStage(g.dataset.stage);
+      else if (act === 'custom') openCustom(g.dataset.stage, +g.dataset.x, +g.dataset.y);
+      else if (act === 'open') { pending.open[g.dataset.stage] = !pending.open[g.dataset.stage]; renderAll(); }
+      else if (act === 'bud') startGrowth(g.dataset.area || '');
+      else if (act === 'annotate') openAnnotate(+g.dataset.x || L.jointX, +g.dataset.y);
+      else if (act === 'detail') openRecord(g.dataset.rec);
+      else if (act === 'area') openArea(g.dataset.area);
+    });
+  });
+  const inp = document.getElementById('cfInput');
+  if (inp) {
+    inp.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') { e.preventDefault(); commitCustom(inp.value.trim()); }
+      else if (e.key === 'Escape') { customBox = null; renderAll(); }
+    });
+    inp.addEventListener('click', (e) => e.stopPropagation());
+    setTimeout(() => { const i = document.getElementById('cfInput'); if (i) i.focus(); }, 30);
+  }
+  svg.querySelectorAll('.cf-sub-b').forEach((b) => {
+    b.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      customBox.sub = b.dataset.sub;
+      renderAll();
+      setTimeout(() => { const i = document.getElementById('cfInput'); if (i) i.focus(); }, 30);
+    });
+  });
+}
+function openCustom(stage, x, y) {
+  customBox = { stage, sub: 'env', x: Math.max(6, x - 76), y: y + 14 };
+  renderAll();
+}
+function commitCustom(text) {
+  if (!text || !customBox) return;
+  const id = 'custom:' + text;
+  const stage = customBox.stage;
+  const sub = customBox.sub;
+  customBox = null;
+  pickOption(stage, id, sub);
+}
+
+// ---------- 细节浮层（时间 / 程度 / 情绪 / 备注） ----------
+function svgToClient(x, y) {
+  const svg = $('groveSvg');
+  const r = svg.getBoundingClientRect();
+  const vb = svg.viewBox.baseVal;
+  const scale = vb.width ? r.width / vb.width : 1;
+  return { x: r.left + x * scale, y: r.top + y * scale };
+}
+function openAnnotate(x, y) {
+  const p = pending;
+  if (!p) return;
+  const layer = $('popLayer');
+  const now = Date.now(), H = 3600e3, D = 24 * H;
+  const times = [
+    { l: '就是现在', v: now },
+    { l: '今天早些时候', v: now - 3 * H },
+    { l: '今天早上', v: now - 8 * H },
+    { l: '昨天', v: now - D },
+    { l: '更早', v: now - 3 * D },
   ];
-  rv.innerHTML = lines.map(([k, v]) =>
-    `<div class="review-line"><span class="rl-k">${k}</span><span class="rl-v">${esc(v)}</span></div>`
-  ).join('');
+  layer.innerHTML = `
+    <div class="pop">
+      <div class="pop-h">这次的细节<button class="pop-x" id="popX">×</button></div>
+      <div class="pop-row"><div class="pop-k">什么时候</div><div class="pop-chips" id="popTime">
+        ${times.map((t) => `<span class="pc ${Math.abs(p.ts - t.v) < 1000 ? 'on' : ''}" data-v="${t.v}">${t.l}</span>`).join('')}
+      </div></div>
+      <div class="pop-row"><div class="pop-k">有多难受</div><div class="pop-chips" id="popSev">
+        ${SEVERITY.map((s) => `<span class="pc ${p.severity === s.id ? 'on' : ''}" data-v="${s.id}">${s.zh}</span>`).join('')}
+      </div></div>
+      <div class="pop-row"><div class="pop-k">情绪 <i>选填</i></div><div class="pop-chips" id="popEmo">
+        ${ONTOLOGY.emotions.map((e) => `<span class="pc sm ${p.emotions.includes(e.id) ? 'on' : ''}" data-v="${e.id}">${e.zh}</span>`).join('')}
+      </div></div>
+      <div class="pop-row"><div class="pop-k">写一句 <i>选填</i></div>
+        <textarea id="popNote" class="pop-note" placeholder="一句话也算">${esc(p.note || '')}</textarea></div>
+    </div>`;
+  layer.hidden = false;
+  const c = svgToClient(x, y);
+  layer.style.left = Math.max(10, Math.min(window.innerWidth - 330, c.x - 150)) + 'px';
+  layer.style.top = Math.max(10, c.y + 18) + 'px';
+
+  $('popX').addEventListener('click', () => { layer.hidden = true; });
+  $('popTime').addEventListener('click', (e) => {
+    const s = e.target.closest('.pc'); if (!s) return;
+    p.ts = +s.dataset.v; layer.hidden = true; renderAll();
+  });
+  $('popSev').addEventListener('click', (e) => {
+    const s = e.target.closest('.pc'); if (!s) return;
+    p.severity = s.dataset.v; layer.hidden = true; renderAll();
+  });
+  $('popEmo').addEventListener('click', (e) => {
+    const s = e.target.closest('.pc'); if (!s) return;
+    const id = s.dataset.v;
+    const i = p.emotions.indexOf(id);
+    if (i >= 0) p.emotions.splice(i, 1); else p.emotions.push(id);
+    s.classList.toggle('on');
+  });
+  $('popNote').addEventListener('input', (e) => { p.note = e.target.value; });
 }
 
-function updateNextEnabled() {
-  let ok = true;
-  if (step === 1) ok = !!(draft.area && draft.symptoms.length);
-  if (step === 3) ok = !!draft.relief;
-  $('nextBtn').disabled = !ok;
+// ============================================================
+// 视图切换
+// ============================================================
+function switchView(v) {
+  document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('active', x.dataset.view === v));
+  $('viewGrove').hidden = v !== 'grove';
+  $('viewRecord').hidden = v !== 'record';
+  $('viewPattern').hidden = v !== 'pattern';
+  if (v === 'grove') renderGrove();
+  if (v === 'record') renderRecent();
+  if (v === 'pattern') renderPatterns();
+  window.scrollTo(0, 0);
 }
+document.querySelectorAll('.tab').forEach((b) => {
+  b.addEventListener('click', () => switchView(b.dataset.view));
+});
+$('startBtn').addEventListener('click', () => startGrowth(''));
+$('growCancel').addEventListener('click', () => cancelGrowth());
 
-$('backBtn').addEventListener('click', () => {
-  if (step === 2) draft.note = $('noteIn') ? $('noteIn').value : draft.note;
-  step -= 1;
-  renderStep();
-  updateStepsBar();
+// ---------- 缩放 ----------
+$('zoomIn').addEventListener('click', () => { zoom = Math.min(1.8, zoom * 1.15); renderGrove(); });
+$('zoomOut').addEventListener('click', () => { zoom = Math.max(0.4, zoom / 1.15); renderGrove(); });
+$('zoomFit').addEventListener('click', () => {
+  const box = $('groveScroll');
+  zoom = Math.max(0.4, Math.min(1.6, (box.clientWidth - 26) / (svgW || 800)));
+  renderGrove();
 });
 
-$('nextBtn').addEventListener('click', () => {
-  if (step < 3) {
-    step += 1;
-    renderStep();
-    updateStepsBar();
-  } else {
-    records.push(draft);
-    saveRecords();
-    closeDrawer();
-    renderRecent();
-    renderGrove();
-    renderPatterns();
-    showToast('记下了 🌱 你的归因林又长了一根枝条');
+// ---------- 滚动到正在生长的枝 ----------
+function stageLeft() {
+  const box = $('groveScroll');
+  const svg = $('groveSvg');
+  if (!pending || !box || !svg) return 0;
+  const s = pendingCols().stages.find((x) => x.key === pending.stageKey);
+  if (!s) return 0;
+  const vb = svg.viewBox.baseVal;
+  const w = svg.getBoundingClientRect().width;
+  if (!vb.width || !w) return 0;
+  const scale = w / vb.width;
+  return Math.max(0, (s.x + 150) * scale - box.clientWidth * 0.42);
+}
+function scrollToPending() {
+  const box = $('groveScroll');
+  const svg = $('groveSvg');
+  if (!box || !svg) return;
+  let top = box.scrollTop;
+  const j = svg.querySelector('.pend-joint');
+  if (j) {
+    const jr = j.getBoundingClientRect();
+    const br = box.getBoundingClientRect();
+    top = box.scrollTop + (jr.top - br.top) - 80;
   }
-});
+  box.scrollTo({ left: stageLeft(), top: Math.max(0, top), behavior: 'smooth' });
+}
+// ---------- 横向滚到当前阶段 ----------
+function scrollToStage() {
+  const box = $('groveScroll');
+  if (!box) return;
+  box.scrollTo({ left: stageLeft(), behavior: 'smooth' });
+}
 
-$('drawerClose').addEventListener('click', closeDrawer);
-$('drawerMask').addEventListener('click', (e) => { if (e.target.id === 'drawerMask') closeDrawer(); });
+// ============================================================
+// 生长提示条
+// ============================================================
+function updateGrowBar() {
+  const bar = $('growBar');
+  if (!pending) { bar.hidden = true; return; }
+  bar.hidden = false;
+  const i = pending.chain.indexOf(pending.stageKey);
+  const stage = STAGES.find((s) => s.key === pending.stageKey);
+  const marks = '①②③④⑤';
+  $('gbQ').textContent = `${marks[i] || ''} ${stage ? stage.q : ''}`;
+  const picked = pending.picked.filter((p) => p.stage === pending.stageKey).length;
+  $('gbHint').textContent = picked
+    ? `已选 ${picked} 片 · 点枝头其他叶子可继续选`
+    : '点枝头的叶子；选过的会长在枝上';
+}
 
-// ---------- 最近记录 ----------
+// ============================================================
+// 最近记录
+// ============================================================
 function renderRecent() {
   const wrap = $('recentList');
   $('recCount').textContent = `${records.length} 条`;
@@ -398,244 +853,29 @@ function renderRecent() {
     return;
   }
   const sorted = [...records].sort((a, b) => b.ts - a.ts);
-  wrap.innerHTML = sorted.slice(0, 12).map((r) => {
+  wrap.innerHTML = sorted.slice(0, 20).map((r) => {
     const sev = SEVERITY.find((s) => s.id === r.severity);
     const sevCls = r.severity === 'light' ? 'sev-l' : r.severity === 'medium' ? 'sev-m' : 'sev-h';
     const tags = [];
     r.env.forEach((x) => tags.push(`<span class="tg env">${esc(zh(ONTOLOGY.env, x))}</span>`));
     r.mood.forEach((x) => tags.push(`<span class="tg mood">${esc(zh(ONTOLOGY.mood, x))}</span>`));
     r.copings.forEach((x) => tags.push(`<span class="tg cope">${esc(zh(ONTOLOGY.copings, x))}</span>`));
-    return `<div class="rec">
-      <div class="rec-time">${fmtShort(r.ts)}<br>${new Date(r.ts).getHours()}:${pad2(new Date(r.ts).getMinutes())}</div>
+    return `<div class="rec" data-rec="${r.id}">
+      <div class="rec-time">${fmtShort(r.ts)}<br>${fmtHM(r.ts)}</div>
       <div class="rec-main">
         <div class="rec-line">${esc(zh(ONTOLOGY.areas, r.area))}<span class="sep">·</span>${esc(r.symptoms.map((x) => zh(ONTOLOGY.symptoms, x)).join('、'))}<span class="tg ${sevCls}" style="margin-left:7px">${sev.zh}</span></div>
         <div class="rec-tags">${tags.join('') || '<span class="tg">未记录归因</span>'}</div>
       </div>
     </div>`;
   }).join('');
-}
-
-// ---------- 树林（归因树） ----------
-// 结构：身体部位 → 症状 → 每次发作（枝条）
-// 每个症状节点下挂若干「枝条」（= 一次发作记录），枝条末端连出触发与缓解叶子。
-function renderGrove() {
-  const svg = $('groveSvg');
-  if (!records.length) {
-    svg.setAttribute('viewBox', '0 0 400 120');
-    svg.setAttribute('width', 400);
-    svg.innerHTML = `<text x="200" y="55" text-anchor="middle" font-size="13" fill="#8b9a91">还没有记录，树林还是空的</text>
-      <text x="200" y="78" text-anchor="middle" font-size="12" fill="#a8b6ad">记一笔之后，树枝就会长出来</text>`;
-    return;
-  }
-
-  // 聚合：部位 → 症状 → 记录
-  const tree = {};
-  records.forEach((r) => {
-    const a = r.area || 'diffuse';
-    tree[a] = tree[a] || {};
-    const symKey = r.symptoms.join('+') || '未描述';
-    tree[a][symKey] = tree[a][symKey] || { syms: r.symptoms, items: [] };
-    tree[a][symKey].items.push(r);
-  });
-
-  const areaKeys = Object.keys(tree);
-  // 列位（相对每棵树的水平偏移）——树自上而下堆叠
-  const COL_SYM = 128;    // 症状
-  const COL_REC = 296;    // 记录点（枝条末端）
-  const COL_TRIG = 392;   // 触发标签
-  const COL_COPE = 548;   // 缓解标签
-  const TREE_W = 660;     // 单棵树宽度
-  const CHIP_GAP = 22;    // 同一行内标签的垂直间距
-  const PAD = 26;
-  const parts = [];
-
-  let y = PAD;
-  const areaBlocks = [];
-
-  areaKeys.forEach((aKey) => {
-    const areaX = PAD;
-    const symKeys = Object.keys(tree[aKey]);
-    let cursorY = y + 34;
-    const symNodes = [];
-    const blockTop = y;
-
-    symKeys.forEach((sKey) => {
-      const g = tree[aKey][sKey];
-      const items = g.items.sort((x1, x2) => x1.ts - x2.ts);
-      const symX = areaX + COL_SYM;
-      cursorY += 12;
-      const symY = cursorY;
-
-      // 症状节点
-      symNodes.push({
-        x: symX, y: symY,
-        label: g.syms.length ? g.syms.map((s) => zh(ONTOLOGY.symptoms, s)).join('、') : '未描述',
-        count: items.length, kind: 'sym',
-        area: aKey,
-      });
-
-      // 每条记录 = 一根枝条，纵向排列；行高按该行标签数自适应
-      const symLabel = g.syms.length ? g.syms.map((s) => zh(ONTOLOGY.symptoms, s)).join('、') : '未描述';
-      const symShown = symLabel.length > 5 ? symLabel.slice(0, 5) + '…' : symLabel;
-      const symW = Math.max(70, symShown.length * 13 + 34);
-      items.forEach((r) => {
-        const envs = r.env.map((e) => zh(ONTOLOGY.env, e));
-        const moods = r.mood.map((e) => zh(ONTOLOGY.mood, e));
-        const cops = r.copings.map((e) => zh(ONTOLOGY.copings, e));
-        const nTrig = envs.length + moods.length;
-        const rowH = Math.max(nTrig, cops.length, 1) * CHIP_GAP + 10;
-
-        const brY = cursorY + rowH / 2;
-        const recX = areaX + COL_REC;
-
-        parts.push({ type: 'branch', x1: symX + symW, y1: symY, x2: recX - 8, y2: brY });
-        // 触发叶子（环境 + 心情）
-        envs.concat(moods).forEach((t, i) => {
-          const isEnv = i < envs.length;
-          parts.push({
-            type: 'leaf', x: areaX + COL_TRIG, y: brY + (i - (nTrig - 1) / 2) * CHIP_GAP,
-            label: t, kind: isEnv ? 'env' : 'mood', rec: r,
-          });
-        });
-        // 缓解叶子
-        cops.forEach((t, i) => {
-          parts.push({
-            type: 'leaf', x: areaX + COL_COPE, y: brY + (i - (cops.length - 1) / 2) * CHIP_GAP,
-            label: t, kind: 'cope', rec: r,
-          });
-        });
-        parts.push({ type: 'record', x: recX, y: brY, rec: r });
-
-        cursorY += rowH;
-      });
-      cursorY += 18;
-    });
-
-    // 部位节点（主干，垂直居中于该树的症状群）
-    const areaY = symNodes.length
-      ? (symNodes[0].y + symNodes[symNodes.length - 1].y) / 2
-      : blockTop + 24;
-    parts.push({ type: 'area', x: areaX, y: areaY, label: zh(ONTOLOGY.areas, aKey),
-      count: records.filter((r) => (r.area || 'diffuse') === aKey).length, area: aKey });
-    symNodes.forEach((s) => {
-      parts.push({ type: 'link', x1: areaX + 104, y1: areaY, x2: s.x, y2: s.y });
-      parts.push(Object.assign({ type: 'sym' }, s));
-    });
-
-    // 树与树之间的分隔（地面线）
-    areaBlocks.push({ top: blockTop, bottom: cursorY, areaY: areaY });
-    y = cursorY + 30;
-  });
-
-  // 渲染
-  const W = Math.max(680, TREE_W + PAD * 2), H = y + 10;
-  svgWidth = W;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  svg.setAttribute('width', W * zoom);
-  svg.setAttribute('height', H * zoom);
-
-  const COL = { body: '#3f6b4a', sym: '#c07a4e', env: '#4a8fa8', mood: '#a2724f', cope: '#7b6aa8' };
-
-  let out = '';
-  // 地面线（分隔每棵树）
-  areaBlocks.forEach((b, i) => {
-    if (i > 0) {
-      out += `<path d="M${PAD - 8} ${b.top - 15} L${W - PAD + 8} ${b.top - 15}"
-        fill="none" stroke="#e6ede6" stroke-width="1" stroke-dasharray="3 4"/>`;
-    }
-  });
-  // 树干（每棵树一条竖线，从主干标签延伸到症状群）
-  areaBlocks.forEach((b) => {
-    const ay = b.areaY;
-    if (ay === undefined) return;
-    out += `<path d="M${PAD + 104} ${ay} L${PAD + 104} ${b.top + 18}"
-      fill="none" stroke="#3f6b4a" stroke-width="2" stroke-linecap="round" opacity=".22"/>`;
-  });
-  // 连线
-  parts.forEach((p) => {
-    if (p.type === 'link') {
-      const mx = (p.x1 + p.x2) / 2;
-      out += `<path d="M${p.x1} ${p.y1} C${mx} ${p.y1} ${mx} ${p.y2} ${p.x2} ${p.y2}"
-        fill="none" stroke="#c3d4c5" stroke-width="1.6"/>`;
-    } else if (p.type === 'branch') {
-      const mx = (p.x1 + p.x2) / 2;
-      out += `<path d="M${p.x1} ${p.y1} C${mx} ${p.y1} ${mx} ${p.y2} ${p.x2} ${p.y2}"
-        fill="none" stroke="#d6e3d7" stroke-width="1.3"/>`;
-    }
-  });
-
-  // 叶子（触发 / 缓解）
-  parts.forEach((p) => {
-    if (p.type !== 'leaf') return;
-    const c = COL[p.kind];
-    const w = Math.max(52, p.label.length * 12 + 18);
-    out += `<g class="node" data-kind="${p.kind}" data-rec="${p.rec.id}">
-      <rect class="nbox" x="${p.x - 4}" y="${p.y - 11}" width="${w}" height="22" rx="11"
-        fill="#fff" stroke="${c}" stroke-width="1.3"/>
-      <text class="nlabel" x="${p.x + 10}" y="${p.y + 1}" fill="${c}">${esc(p.label)}</text>
-    </g>`;
-  });
-
-  // 记录节点（枝条末端的小圆点 + 日期）
-  parts.forEach((p) => {
-    if (p.type !== 'record') return;
-    const sev = p.rec.severity;
-    const c = sev === 'light' ? '#9ec4a2' : sev === 'medium' ? '#e0a83c' : '#d1705f';
-    out += `<g class="node" data-rec="${p.rec.id}" data-detail="1">
-      <circle class="nbox" cx="${p.x}" cy="${p.y}" r="6" fill="${c}" stroke="#fff" stroke-width="2"/>
-      <text class="nsub" x="${p.x + 12}" y="${p.y + 4}" fill="#8b9a91">${fmtShort(p.rec.ts)}</text>
-    </g>`;
-  });
-
-  // 症状节点（标签过长时截断，完整名放 title）
-  parts.forEach((p) => {
-    if (p.type !== 'sym') return;
-    const full = p.label;
-    const shown = full.length > 5 ? full.slice(0, 5) + '…' : full;
-    const w = Math.max(70, shown.length * 13 + 34);
-    out += `<g class="node" data-sym="1" data-area="${p.area}" data-detail="1">
-      <title>${esc(full)}</title>
-      <rect class="nbox" x="${p.x}" y="${p.y - 15}" width="${w}" height="30" rx="9"
-        fill="#fdf3ea" stroke="#c07a4e" stroke-width="1.5"/>
-      <text class="nlabel" x="${p.x + 12}" y="${p.y + 1}" fill="#a05f37">${esc(shown)}</text>
-      <text class="ncount" x="${p.x + w - 11}" y="${p.y + 1}" text-anchor="end" fill="#c07a4e">${p.count}</text>
-    </g>`;
-  });
-
-  // 部位节点（主干）
-  parts.forEach((p) => {
-    if (p.type !== 'area') return;
-    const w = Math.max(88, p.label.length * 14 + 30);
-    out += `<g class="node" data-area="${p.area}" data-detail="1">
-      <rect class="nbox" x="${p.x}" y="${p.y - 17}" width="${w}" height="34" rx="11"
-        fill="#3f6b4a" stroke="#2f5638" stroke-width="1"/>
-      <text class="nlabel" x="${p.x + 13}" y="${p.y - 2}" fill="#fff">${esc(p.label)}</text>
-      <text class="nsub" x="${p.x + 13}" y="${p.y + 11}" fill="#b9d3bd">${p.count} 次</text>
-    </g>`;
-  });
-
-  svg.innerHTML = out;
-
-  svg.querySelectorAll('.node').forEach((g) => {
-    g.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      if (g.dataset.rec) openRecord(g.dataset.rec);        // 叶子标签 / 记录点
-      else if (g.dataset.sym) openArea(g.dataset.area);      // 症状节点 → 该部位的聚合
-      else if (g.dataset.area) openArea(g.dataset.area);     // 部位主干
-    });
+  wrap.querySelectorAll('.rec').forEach((el) => {
+    el.addEventListener('click', () => openRecord(el.dataset.rec));
   });
 }
 
-$('zoomIn').addEventListener('click', () => { zoom = Math.min(1.8, zoom * 1.15); renderGrove(); });
-$('zoomOut').addEventListener('click', () => { zoom = Math.max(0.4, zoom / 1.15); renderGrove(); });
-$('zoomFit').addEventListener('click', () => {
-  // 适配：宽度铺满容器，高度按比例
-  const box = document.querySelector('.grove-scroll');
-  zoom = Math.max(0.5, Math.min(1.6, (box.clientWidth - 26) / (svgWidth || 680)));
-  renderGrove();
-});
-
-// ---------- 详情 ----------
+// ============================================================
+// 详情弹层
+// ============================================================
 function openRecord(id) {
   const r = records.find((x) => x.id === id);
   if (!r) return;
@@ -656,7 +896,6 @@ function openRecord(id) {
     ${r.note ? `<div class="sh-sec"><div class="sh-k">补充</div><div>${esc(r.note)}</div></div>` : ''}`;
   $('sheetMask').hidden = false;
 }
-
 function openArea(areaKey) {
   const list = records.filter((r) => (r.area || 'diffuse') === areaKey);
   $('sheetTitle').textContent = zh(ONTOLOGY.areas, areaKey);
@@ -684,27 +923,24 @@ function openArea(areaKey) {
     </div>`;
   $('sheetMask').hidden = false;
 }
-
 $('sheetClose').addEventListener('click', () => { $('sheetMask').hidden = true; });
 $('sheetMask').addEventListener('click', (e) => { if (e.target.id === 'sheetMask') $('sheetMask').hidden = true; });
 
-// ---------- 规律（跨发作层） ----------
+// ============================================================
+// 规律
+// ============================================================
 function renderPatterns() {
   const pb = $('patternBody');
   const rb = $('reliefBody');
-
   if (records.length < 2) {
     pb.innerHTML = '<div class="empty">至少记两条，才能看出规律。</div>';
     rb.innerHTML = '<div class="empty">—</div>';
     return;
   }
-
-  // 触发 → 症状 关联
   const pair = {};
   records.forEach((r) => {
     const sym = r.symptoms.map((s) => zh(ONTOLOGY.symptoms, s)).join('、') || '未描述';
-    const trig = [...r.env, ...r.mood];
-    trig.forEach((t) => {
+    [...r.env, ...r.mood].forEach((t) => {
       const isEnv = r.env.includes(t);
       const k = t + '||' + sym;
       pair[k] = pair[k] || { t, sym, env: isEnv, n: 0 };
@@ -713,7 +949,6 @@ function renderPatterns() {
   });
   const top = Object.values(pair).sort((a, b) => b.n - a.n).slice(0, 6);
   const maxN = top.length ? top[0].n : 1;
-
   pb.innerHTML = top.map((p) => `
     <div class="pat-group">
       <div class="pg-title">${esc(p.t)} → ${esc(p.sym)}</div>
@@ -724,7 +959,6 @@ function renderPatterns() {
       </div>
     </div>`).join('');
 
-  // 缓解有效性
   const copeStat = {};
   records.forEach((r) => {
     r.copings.forEach((c) => {
@@ -734,10 +968,9 @@ function renderPatterns() {
     });
   });
   const cTop = Object.entries(copeStat)
-    .sort((a, b) => (b[1].helped - a[1].n / 2) - (a[1].helped - a[1].n / 2))
+    .sort((a, b) => (b[1].helped - b[1].n / 2) - (a[1].helped - a[1].n / 2))
     .slice(0, 6);
   const cMax = cTop.length ? Math.max.apply(null, cTop.map((x) => x[1].n)) : 1;
-
   rb.innerHTML = cTop.length ? cTop.map(([k, v]) => {
     const rate = v.n ? Math.round((v.helped / v.n) * 100) : 0;
     return `
@@ -752,7 +985,9 @@ function renderPatterns() {
   }).join('') : '<div class="empty">还没有缓解记录。</div>';
 }
 
-// ---------- Toast ----------
+// ============================================================
+// Toast
+// ============================================================
 function showToast(msg) {
   const el = $('toast');
   el.textContent = msg;
@@ -761,7 +996,9 @@ function showToast(msg) {
   showToast._t = setTimeout(() => el.classList.remove('show'), 2200);
 }
 
-// ---------- 演示数据 ----------
+// ============================================================
+// 演示数据
+// ============================================================
 function seedRecords() {
   const now = Date.now();
   const H = 3600e3, D = 24 * H;
@@ -796,7 +1033,14 @@ function seedRecords() {
   ];
 }
 
-// ---------- 初始化 ----------
-renderRecent();
-renderGrove();
-renderPatterns();
+// ============================================================
+// 渲染入口
+// ============================================================
+function renderAll() {
+  renderGrove();
+  renderRecent();
+  renderPatterns();
+  updateGrowBar();
+}
+renderAll();
+switchView('grove');
