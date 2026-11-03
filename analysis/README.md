@@ -5,22 +5,30 @@
 
 ## 当前内容 · Current
 - 暂为空骨架。方法学参考保留在本地 `newresearch/Analysis/`：
+  Currently an empty scaffold. Methodological references are kept locally under `newresearch/Analysis/`:
   - `Book_SaldanaCodingManualForQualResearch.pdf` — 编码手册（质性分析）
+    The coding manual (qualitative analysis).
   - `Using-thematic-analysis-in-psychology-1.pdf` — 主题分析原文（Braun & Clarke）
+    The thematic-analysis paper (Braun & Clarke).
   - `RAY_seminar_code/` — RAY seminar 统计/可视化示例（t-test / ANOVA / Likert），作方法学参考
+    RAY seminar statistics and visualization examples (t-test / ANOVA / Likert), kept as methodological reference.
 
 ## 注意事项 · Notes
 - **原始数据勿入库**：访谈录音、转录、临床数据属敏感材料，放在 `analysis/raw/` 与 `analysis/transcripts/`，已被根 `.gitignore` 忽略，永不推送。
+  **Never commit raw data**: interview recordings, transcripts, and clinical data are sensitive. Keep them in `analysis/raw/` and `analysis/transcripts/`, which the root `.gitignore` excludes so they are never pushed.
 - 仅脱敏后的编码表示例、聚合统计可纳入版本控制。
+  Only de-identified coding examples and aggregate statistics belong in version control.
 - 建议使用质性分析工具（如 Taguette / NVivo / 手写）并保留审计轨迹。
+  A qualitative analysis tool (e.g., Taguette / NVivo / manual coding) is recommended, with an audit trail preserved.
 
-## 计划结构 · Planned Layout（待建）
+## 计划结构 · Planned Layout（待建 / to be created）
+
 ```
 analysis/
 ├── README.md
-├── scripts/        # 分析脚本（R / Python）
-├── codes/          # 编码表 / 主题框架（脱敏）
-├── figures/        # 生成图表
-├── raw/            # 原始数据（gitignored）
-└── transcripts/    # 转录稿（gitignored）
+├── scripts/        # 分析脚本（R / Python）/ Analysis scripts (R / Python)
+├── codes/          # 编码表 / 主题框架（脱敏）/ Coding table and theme framework (de-identified)
+├── figures/        # 生成图表 / Generated figures
+├── raw/            # 原始数据（gitignored）/ Raw data (gitignored)
+└── transcripts/    # 转录稿（gitignored）/ Transcripts (gitignored)
 ```
