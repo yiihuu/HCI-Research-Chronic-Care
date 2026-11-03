@@ -114,7 +114,14 @@ HCI-Research-Chronic-Care/
 │   ├── system-design.md   # 系统设计（RQ2 链接选择交互）/ System design (RQ2 link-selection)
 │   ├── methods.md         # 研究方法与数据分析（RQ1 患者需求）/ Method & data analysis (RQ1 patient needs)
 │   ├── related-work.md    # 相关工作与文献对比 / Related work and literature comparison
-│   └── references.md      # 参考文献清单 / Reference list
+│   ├── references.md      # 参考文献清单 / Reference list
+│   └── poster/            # 会议海报文稿（对标 InterLeaf / CHI EA）/ Poster manuscript (after InterLeaf / CHI EA)
+│       └── manuscript.md  # 海报双语文稿骨架 / Bilingual poster manuscript scaffold
+├── note/                  # 概念梳理笔记（可读性优先，已映射到课题）/ Concept notes (readable, mapped to the project)
+│   ├── concepts.md        # 方法论概念梳理：RTD + 概念验证 + 研究设计/数据收集 / Method concepts: RTD + PoC + study design
+│   └── assets/            # 笔记引用的讲义截图 / Lecture screenshots referenced by the notes
+├── 资料/                  # 方法论书籍/讲义/PDF 素材库（你后续上传）/ Methodology books & PDF library (to be uploaded)
+│   └── README.md          # 资料索引与入库守则 / Material index & intake rules
 ├── prototype/             # 可运行原型 Nomi 暖记 / chronic-recall / Runnable prototype
 │   ├── index.html
 │   ├── app.js
@@ -126,9 +133,19 @@ HCI-Research-Chronic-Care/
     └── RESEARCH.md
 ```
 
+## 概念笔记与资料库 · Concept Notes & Material Library
+
+- [`note/`](./note/) 是**方法论概念梳理**（可读性优先、已中英对照、已映射到本课题）：目前含 `concepts.md`——RTD、概念验证（发明型研究三部分 / 健壮性层级）、研究设计分组、数据收集方法，及与慢病课题的对应表。
+  [`note/`](./note/) holds **methodology concept notes** (readable-first, bilingual, mapped to this project): currently `concepts.md` — RTD, proof of concept (three parts of inventive research / robustness levels), study-design groups, data-collection methods, and a mapping table to the chronic-care project.
+- [`资料/`](./资料/) 是**原始素材库**（你后续上传的方法论书籍 / 讲义 / PDF）。入库前请确认无版权与隐私风险；敏感内容请放 `private/`。
+  [`资料/`](./资料/) is the **raw-material library** (methodology books / lecture notes / PDFs you will upload later). Confirm no copyright/privacy risk before adding; put sensitive content in `private/`.
+- 流程：上传到 `资料/` → 在 `note/` 消化成概念笔记 → 沉淀进 `docs/`（方法章 / related work）。
+  Flow: upload to `资料/` → digest into `note/` concept notes → consolidate into `docs/` (methods chapter / related work).
+
 ## 路线规划 · Roadmap
 
-- **阶段 0（当前）· 框架搭建**：仓库结构、研究章节骨架、原型代码入库。
+- **阶段 0（当前）· 框架搭建**：仓库结构、研究章节骨架、原型代码入库；新增 `note/`（概念梳理）与 `资料/`（素材库）。
+  **Stage 0 (current) · Framework**: repository structure, research chapter scaffolds, prototype code committed; added `note/` (concept notes) and `资料/` (material library).
   **Stage 0 (current) · Framework**: repository structure, research chapter scaffolds, prototype code committed.
 - **阶段 1 · 形成性研究（RQ1）**：IRB 通过 → 患者访谈（症状归因/链接需求）→ 主题分析 → 障碍与需求提炼。
   **Stage 1 · Formative study (RQ1)**: IRB approval → patient interviews (symptom-attribution / linking needs) → thematic analysis → obstacles and requirements distilled.

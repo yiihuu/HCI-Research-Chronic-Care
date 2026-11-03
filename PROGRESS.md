@@ -35,6 +35,10 @@
       <td style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
       <td><b>研究转向 / Pivot</b>：从"医患协同意义建构 Dashboard（MS 案例）"重构为"患者端慢病自我管理 + 链接选择（link-selection）交互"，并泛化到一般慢性病（不再限定 MS）。重构 README 与 docs/{system-design,methods,related-work} 框架：RQ1 → 患者侧归因需求，RQ2 → 链接选择交互，related-work 轴线重排（SDM 降为背景脉络）。<br><b>Research pivot</b>: reframed from "clinician–patient collaborative-sensemaking dashboard (MS case)" to "patient-side chronic-disease self-management + link-selection interaction", generalized to chronic disease broadly (no longer MS-specific). Reframed the frameworks of README and docs/{system-design,methods,related-work}: RQ1 → patient-side attribution needs, RQ2 → link-selection interaction, related-work axes reordered (SDM demoted to background context).</td>
     </tr>
+    <tr>
+      <td style="color:#2f7d77;font-weight:700;vertical-align:top;white-space:nowrap;background:#eaf6f4;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
+      <td><b>方法论概念梳理 / Methods concept notes</b>：新增 <code>note/</code> 与 <code>资料/</code> 两个顶层文件夹；<code>note/concepts.md</code> 系统梳理 RTD、概念验证（发明型研究三部分 / 健壮性层级）、研究设计分组（技术评估 / 受控实验 / 专家评审 / 田野部署）、数据收集方法（半结构化访谈 / 刺激性回忆 / 标准化问卷 / ESM+日志 / 视频观察），并映射到本课题；11 张讲义截图存入 <code>note/assets/</code>。<br><b>Methods concept notes</b>: added two top-level folders <code>note/</code> and <code>资料/</code>; <code>note/concepts.md</code> systematically organizes RTD, proof of concept (three parts of inventive research / robustness levels), study-design groups (technical evaluation / controlled experiment / expert review / field deployment), and data-collection methods (semi-structured interviews / stimulated recall / standardised questionnaires / ESM+logging / video observation), mapped onto this project; 11 lecture screenshots stored under <code>note/assets/</code>.</td>
+    </tr>
   </tbody>
 </table>
 
