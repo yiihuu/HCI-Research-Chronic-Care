@@ -1,0 +1,29 @@
+# ===== 依赖 / 构建产物 =====
+node_modules/
+dist/
+build/
+*.log
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== 私有研究笔记（永不推送）=====
+# 深层研究思路、投稿策略、导师汇报草稿存放于此，已被忽略。
+private/
+
+# ===== 大型二进制 / 数据（按需手动加入或单独管理）=====
+*.mp4
+*.mov
+*.wav
+*.m4a
+*.zip
+# 录音、访谈转录等大文件建议用 Git LFS 或外部存储，勿直接塞入主仓库。
+analysis/raw/
+analysis/transcripts/
+
+# ===== 编辑器 =====
+.vscode/
+.idea/
+*.swp
