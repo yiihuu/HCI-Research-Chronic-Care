@@ -1,8 +1,9 @@
 # 归因林 · Attribution Grove（原型说明）
 
-> 在线 · Live: http://8.148.233.53/grove/
+> 在线·概念演示（带种子数据）· Live demo: http://8.148.233.53/grove-demo/
+> 真实记录版（无演示数据，需建档）· Real use: http://8.148.233.53/grove/
 > 本地 · Local: 用浏览器打开 `index.html`（纯静态，无依赖、无网络请求，数据存 localStorage）。
-> Live: http://8.148.233.53/grove/ — Local: open `index.html` in a browser (static, no dependencies, no network calls; data lives in localStorage).
+> Demo (seed data): http://8.148.233.53/grove-demo/ — Real (no seed, participant code): http://8.148.233.53/grove/ — Local: open `index.html` in a browser (static, no dependencies, no network calls; data lives in localStorage).
 
 ## 视图 · Views
 

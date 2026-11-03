@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>归因林 · Attribution Grove（真实记录）</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ══════════ 建档 / 登录 ══════════ -->
+<div class="boot-mask" id="boot">
+  <div class="boot">
+    <div class="boot-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 22V9" stroke="#3f6b4a" stroke-width="2" stroke-linecap="round"/><path d="M12 13c0-3 2-5 5-5 0 3-2 5-5 5z" fill="#6b9c6e"/><path d="M12 16c0-2.5-1.8-4.5-4.5-4.5 0 2.5 1.8 4.5 4.5 4.5z" fill="#8fb98c"/></svg>
+    </div>
+    <h1 class="boot-title">归因林</h1>
+    <p class="boot-sub">你的慢病症状归因记录本。<br>感觉不舒服时，直接在树上长出一根枝条记下来。</p>
+    <label class="boot-label">参与者代号 · Participant code</label>
+    <input class="boot-input" id="codeInput" type="text" maxlength="24" placeholder="例如 P-001，或留空自动生成" />
+    <button class="boot-btn" id="codeGo">开始记录</button>
+    <p class="boot-note">代号仅用于把你的记录归在一起；同一台设备会记住它。</p>
+  </div>
+</div>
+
+<!-- ══════════ 顶部栏 ══════════ -->
+<header class="topbar">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 22V9" stroke="#3f6b4a" stroke-width="2" stroke-linecap="round"/><path d="M12 13c0-3 2-5 5-5 0 3-2 5-5 5z" fill="#6b9c6e"/><path d="M12 16c0-2.5-1.8-4.5-4.5-4.5 0 2.5 1.8 4.5 4.5 4.5z" fill="#8fb98c"/></svg>
+    </span>
+    <span class="brand-name">归因林 <i>Attribution Grove</i></span>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-view="grove" role="tab">归因林</button>
+    <button class="tab" data-view="record" role="tab">记录</button>
+    <button class="tab" data-view="pattern" role="tab">规律</button>
+  </div>
+  <button class="gear" id="gearBtn" aria-label="设置">
+    <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" fill="none" stroke="#3f6b4a" stroke-width="1.8"/><path d="M19 12a7 7 0 00-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 00-2-1.2L14.2 2h-4l-.4 2.5a7 7 0 00-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 005 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 002 1.2l.4 2.5h4l.4-2.5a7 7 0 002-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z" fill="none" stroke="#3f6b4a" stroke-width="1.4"/></svg>
+  </button>
+</header>
+
+<!-- ══════════ 视图一：归因林（在树上生长） ══════════ -->
+<main id="viewGrove" class="view">
+  <section class="card grove-card">
+    <div class="card-head">
+      <h2 class="card-title">我的归因林</h2>
+      <div class="legend">
+        <span class="lg"><i class="dot d-body"></i>身体部位</span>
+        <span class="lg"><i class="dot d-sym"></i>症状</span>
+        <span class="lg"><i class="dot d-env"></i>环境触发</span>
+        <span class="lg"><i class="dot d-mood"></i>心情触发</span>
+        <span class="lg"><i class="dot d-cope"></i>缓解</span>
+      </div>
+    </div>
+    <p class="card-sub">点树干上的 ＋ 长出新枝；点枝头的叶子，把它归因下去——选过的叶子会留在枝上。</p>
+
+    <div class="sensor-card" id="sensorCard" hidden>
+      <div class="sc-ico">🌡💧</div>
+      <div class="sc-body">
+        <div class="sc-read" id="scRead">读取中…</div>
+        <div class="sc-note" id="scNote">温湿度联动已开启。</div>
+      </div>
+      <button class="sc-btn" id="scPost" hidden>模拟 ESP32 上报</button>
+    </div>
+
+    <div class="grow-bar" id="growBar" hidden>
+      <span class="gb-q" id="gbQ"></span>
+      <span class="gb-hint" id="gbHint"></span>
+      <button class="gb-cancel" id="growCancel">取消</button>
+    </div>
+
+    <div class="grove-scroll" id="groveScroll">
+      <svg id="groveSvg" role="img" aria-label="归因树图"></svg>
+    </div>
+    <div class="grove-tools">
+      <button class="tool-btn" id="zoomOut" aria-label="缩小">−</button>
+      <button class="tool-btn" id="zoomIn" aria-label="放大">+</button>
+      <button class="tool-btn wide" id="zoomFit">适配</button>
+    </div>
+  </section>
+</main>
+
+<!-- ══════════ 视图二：记录 ══════════ -->
+<main id="viewRecord" class="view" hidden>
+  <section class="card entry-card">
+    <h2 class="card-title">记一笔</h2>
+    <p class="card-sub">在归因林里直接长出新枝——不用填表。</p>
+    <button class="big-btn" id="startBtn">
+      <span class="bb-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 21V10" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M12 14c0-3.2 2.2-5.5 5.5-5.5C17.5 11.7 15.2 14 12 14z" fill="#cfe8d6"/><path d="M12 17c0-2.8-2-5-4.8-5C7.2 14.8 9 17 12 17z" fill="#cfe8d6"/></svg>
+      </span>
+      长一根新枝
+    </button>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2 class="card-title">最近记录</h2>
+      <span class="count-pill" id="recCount">0 条</span>
+    </div>
+    <div id="recentList" class="recent"></div>
+  </section>
+</main>
+
+<!-- ══════════ 视图三：规律 ══════════ -->
+<main id="viewPattern" class="view" hidden>
+  <section class="card">
+    <h2 class="card-title">我的触发规律</h2>
+    <p class="card-sub">多次记录之后，这里开始显出规律。</p>
+    <div id="patternBody" class="pattern"></div>
+  </section>
+  <section class="card">
+    <h2 class="card-title">缓解方式回顾</h2>
+    <div id="reliefBody" class="pattern"></div>
+  </section>
+</main>
+
+<!-- ══════════ 设置 ══════════ -->
+<div class="sheet-mask" id="settingsMask" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="设置">
+    <div class="sheet-head">
+      <h3>设置</h3>
+      <button class="icon-btn" id="settingsClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <div class="set-row">
+        <div class="set-k">参与者代号</div>
+        <div class="set-v"><span id="setCode" class="set-code">—</span>
+          <button class="set-btn" id="setChange">切换</button></div>
+      </div>
+      <div class="set-row">
+        <div class="set-k">温湿度联动<small>开启后可记录温度/湿度，未来接 ESP32 传感器</small></div>
+        <label class="switch"><input type="checkbox" id="setSensor" /><span class="slider"></span></label>
+      </div>
+      <div class="set-row col">
+        <div class="set-k">我的数据</div>
+        <button class="set-btn wide" id="setExport">导出我的记录（CSV）</button>
+      </div>
+      <div class="set-row col">
+        <div class="set-k">关于</div>
+        <p class="set-about">归因林是一个低负担的慢性病症状归因记录工具：当你发现不舒服，直接在「树」上把它与可能的环境与心情因素连起来。所有记录保存在研究服务器上，按你的参与者代号归类。本页面用于真实使用，非演示。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 细节浮层（时间 / 程度 / 情绪 / 备注） ══════════ -->
+<div class="pop-layer" id="popLayer" hidden></div>
+
+<!-- ══════════ 节点详情弹层 ══════════ -->
+<div class="sheet-mask" id="sheetMask" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="节点详情">
+    <div class="sheet-head">
+      <h3 id="sheetTitle">节点</h3>
+      <button class="icon-btn" id="sheetClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="ontology.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

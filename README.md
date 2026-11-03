@@ -26,7 +26,9 @@
 
 ## 系统设计 · System Design
 
-→ [docs/system-design.md](./docs/system-design.md) · 原型 [prototype/](./prototype/) · 在线 http://8.148.233.53/grove/
+→ [docs/system-design.md](./docs/system-design.md) · 原型 [prototype/](./prototype/)
+
+在线 · Live：真实记录版 http://8.148.233.53/grove/（参与者代号建档，记录存研究服务器，无演示数据）；概念演示版（带种子数据）http://8.148.233.53/grove-demo/
 
 📝 TODO
 
