@@ -3,6 +3,18 @@
 > 公开的工作记录，用于自我督促与进度追踪。深层研究思路见私有笔记（不在此公开仓库）。
 > Public working log for self-accountability and progress tracking. Deep research thinking lives in private notes (not pushed).
 
+## 2026-11-04
+- **第二批讲义入库 / Second deck ingested**：`PPT/2`（Week 10「Ethics / Study Design」，19 张手机拍摄截图）逐张识读后，去除重复图（`_305_2` 与 `_304_2` 同片）与议程页（`_307_2`），17 张有效图重命名为 `rd-01` … `rd-17` 存入 `note/assets/`（1.9 MB），按「规划 → 范式/问题 → 设计要素 → 对齐 → 伦理」的逻辑排序。
+  Ingested `PPT/2` (Week 10 "Ethics / Study Design", 19 phone shots): after reading each one, dropped the duplicate (`_305_2` duplicates `_304_2`) and the agenda slide (`_307_2`); renamed the 17 usable images `rd-01` … `rd-17` into `note/assets/` (1.9 MB), ordered by planning → paradigm/question → design mechanics → alignment → ethics.
+- **新增 `note/research-design.md`**：按仓库双语约定写成可读笔记——研究范式（后实证/建构/倡导/实用主义）、范式→方法学→设计→方法四级、从题目到 RQ 的漏斗、RQ vs 假设（措辞锁死设计）、12 项规划决策、过程两条规则、定量/定性/混合、混合方法三结构（聚敛/解释性顺序/探索性顺序）、被试内 vs 被试间、基线四类陷阱、HCI 样本量四条经验（18 / 12 / 5 / 12；勿用饱和作停止规则）、伦理三级许可与具身 AI 特有问题、两种常见错配、问题类型→设计、方法按目的、伦理争论站 A–D、术语表与参考文献；附 Mermaid 图 3 张与 §0 一页速查表。
+  Added `note/research-design.md` in the repo's bilingual convention: paradigms; the paradigm→methodology→design→method ladder; topic→RQ funnel; RQ vs hypothesis (wording commits you to a design); the twelve planning decisions; the two process rules; quant/qual/mixed; three mixed-methods structures; within- vs between-subjects; four baseline pitfalls; HCI sample-size heuristics (18 / 12 / 5 / 12; do not use saturation as a stopping rule); three permission levels and embodied-AI ethics issues; the two common mismatches; question-type→design; methods by purpose; debate stations A–D; glossary and references. Includes three Mermaid diagrams and a §0 one-page cheat sheet.
+- **索引与交叉链接 / Index and cross-links**：新增 `note/README.md`（三份笔记的对照表、阅读顺序、图片来源与体积说明）；`concepts.md` 顶部加 `research-design.md` 互链；`README.md` 结构树与「概念笔记」小节补入新文件。
+  Added `note/README.md` (a comparison table of the three notes, reading order, asset provenance and size); cross-linked `research-design.md` from the top of `concepts.md`; updated the structure tree and the "Concept Notes" section in `README.md`.
+- **口径提醒 / Caveat**：`research-design.md` §14 只列「讲义逼我们必须回答的问题」，不代写研究正文；所有取舍仍为 `📝 TODO（手写）`。讲义中的 Debate stations B/D 与部分参考文献页码在照片上被遮挡或不完整，已在正文标注「部分文字不清 / 需核对原文」。
+  Caveat: §14 of `research-design.md` lists only "questions the deck forces us to answer" and writes no research prose; all choices remain `📝 TODO（手写）`. Parts of debate stations B/D and some reference pages were occluded or cut off in the photos and are flagged in-text as "partly illegible / verify against source".
+- **下一步 / Next**：把 `research-design.md` §14 的待定项逐条落到 `docs/methods.md`（尤其范式声明、混合方法整合点、N 的论证方式）；核对 Debate stations 引用的 Meng / Sharkey 原文与页码后并入 `docs/references.md`。
+  Next: settle the open items in §14 into `docs/methods.md` (especially the paradigm statement, the mixed-methods integration point, and the N justification); verify the Meng / Sharkey sources behind the debate stations and merge them into `docs/references.md`.
+
 ## 2026-11-03
 - **仓库框架搭建 / Scaffold**：仿 `ai-ing-hub` 流程，建立研究+开发一体仓库。结构：README（双语 HCI 研究总览）、PROGRESS（对外里程碑）、DEVLOG（本文件）、docs/（system-design / methods / related-work / references 四章节骨架）、prototype/（Nomi 暖记原型代码）、analysis/（分析材料索引）、private/（私有笔记，已 gitignore）。
   Mirrored the `ai-ing-hub` workflow to build a single repository that unifies research and development: README (bilingual HCI research overview), PROGRESS (external milestones), DEVLOG (this file), docs/ (scaffolds for system-design / methods / related-work / references), prototype/ (Nomi 暖记 prototype code), analysis/ (analysis material index), private/ (private notes, gitignored).

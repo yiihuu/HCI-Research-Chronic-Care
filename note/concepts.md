@@ -6,6 +6,9 @@
 > 目的：把这些"方法工具箱"与我们的课题（患者端慢性病自我管理 + 链接选择交互）对应起来，方便后续写论文方法章与 poster。
 > Purpose: to map this "methods toolbox" onto our own project (patient-side chronic-disease self-management + link-selection interaction), for use in the methods chapter and the poster.
 
+> **相关笔记 Companion**：[`research-design.md`](./research-design.md)（研究范式 / 12 项规划决策 / 设计与问题的错配 / 伦理）· [`README.md`](./README.md)（笔记索引）
+> **Related**: `research-design.md` (paradigms / twelve planning decisions / design–question mismatches / ethics) · `README.md` (note index)
+
 📝 TODO（手写）：本笔记是**可读性优先的梳理**，不是论文正文。后续请把与导师确认后的术语、引用页码、以及我们自己研究的实际选择填进来。
 
 ---
