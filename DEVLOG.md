@@ -3,6 +3,10 @@
 > 公开的工作记录，用于自我督促与进度追踪。深层研究思路见私有笔记（不在此公开仓库）。
 > Public working log for self-accountability and progress tracking. Deep research thinking lives in private notes (not pushed).
 
+## 2026-11-05
+- **改为纯文字笔记 / Notes are now text-only**：按维护者要求，移除 `note/assets/` 下全部 28 张讲义截图（第一批 `01_*` 11 张 + 第二批 `rd-*` 17 张），并把 `concepts.md` 与 `research-design.md` 中所有 `![...](assets/...)` 图片引用、`note/README.md` 的「张数 / Assets」段落、`README.md` 结构树中的 `assets/` 一并删除。讲义内容已全部提炼为可读文字（含表格与 Mermaid 图），删图不影响知识完整性。源 PPT 仍在本地 `PPT/` 文件夹，未动。
+  Per maintainer request, removed all 28 lecture screenshots from `note/assets/` (batch 1 `01_*` × 11 + batch 2 `rd-*` × 17) and stripped every `![...](assets/...)` embed from `concepts.md` / `research-design.md`, the "Slides / Assets" section of `note/README.md`, and the `assets/` line in the `README.md` tree. The lecture content is already distilled into readable prose (tables + Mermaid), so removing the images loses nothing. The source PPTs remain in the local `PPT/` folder.
+
 ## 2026-11-04
 - **第二批讲义入库 / Second deck ingested**：`PPT/2`（Week 10「Ethics / Study Design」，19 张手机拍摄截图）逐张识读后，去除重复图（`_305_2` 与 `_304_2` 同片）与议程页（`_307_2`），17 张有效图重命名为 `rd-01` … `rd-17` 存入 `note/assets/`（1.9 MB），按「规划 → 范式/问题 → 设计要素 → 对齐 → 伦理」的逻辑排序。
   Ingested `PPT/2` (Week 10 "Ethics / Study Design", 19 phone shots): after reading each one, dropped the duplicate (`_305_2` duplicates `_304_2`) and the agenda slide (`_307_2`); renamed the 17 usable images `rd-01` … `rd-17` into `note/assets/` (1.9 MB), ordered by planning → paradigm/question → design mechanics → alignment → ethics.

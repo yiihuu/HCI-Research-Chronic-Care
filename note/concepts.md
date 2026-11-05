@@ -1,7 +1,7 @@
 # 概念梳理 · Concept Notes
 
-> 本笔记梳理 HCI 研究方法论的核心概念，来源有二：(1) 一套方法论讲义截图（见 `note/assets/`，标注为 PROOF OF CONCEPT / STUDY DESIGN / DATA COLLECTION）；(2) RTD（Research Through Design）相关文献。
-> This note organizes core concepts of HCI research methodology from two sources: (1) a set of methodology lecture slides (see `note/assets/`, tagged PROOF OF CONCEPT / STUDY DESIGN / DATA COLLECTION); (2) literature on Research Through Design (RTD).
+> 本笔记梳理 HCI 研究方法论的核心概念，来源有二：(1) 一套方法论课程讲义（标注为 PROOF OF CONCEPT / STUDY DESIGN / DATA COLLECTION）；(2) RTD（Research Through Design）相关文献。
+> This note organizes core concepts of HCI research methodology from two sources: (1) a set of methodology lecture slides (tagged PROOF OF CONCEPT / STUDY DESIGN / DATA COLLECTION); (2) literature on Research Through Design (RTD).
 >
 > 目的：把这些"方法工具箱"与我们的课题（患者端慢性病自我管理 + 链接选择交互）对应起来，方便后续写论文方法章与 poster。
 > Purpose: to map this "methods toolbox" onto our own project (patient-side chronic-disease self-management + link-selection interaction), for use in the methods chapter and the poster.
@@ -39,7 +39,6 @@
 
 ### 2.1 发明型研究的三个部分 · Inventive research has three parts
 
-![Inventive research three parts & concept origins](assets/01_poc-three-parts.jpg)
 
 - **① 概念创造 Concept creation**：设想一种连接"技术"与"人的需求"的新方式。
   Devise a new way to bridge technology and human needs.
@@ -63,7 +62,6 @@
 
 ### 2.3 该造多少：健壮性层级 · How much to build — levels of robustness
 
-![How much to build & cost of robustness](assets/02_poc-how-much-to-build.jpg)
 
 - **两个维度 Two dimensions**：
   - 功能范围 Scope of function：从"只做新东西"，到"真实场景所需的支撑功能"。
@@ -91,7 +89,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 3.1 Group 1 · 技术评估 Technical evaluation
 
-![Technical evaluation](assets/03_studydesign-technical-eval.jpg)
 
 - **问题**：系统是否如其所宣称的那样工作——准确、低延迟、健壮、模型决策质量是否够好？
   Does the system do what it claims, accurately and reliably enough?
@@ -102,7 +99,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 3.2 Group 2 · 受控实验 Controlled experiment
 
-![Controlled experiment](assets/04_studydesign-controlled-exp.jpg)
 
 - **问题**：比起基线，人们用该系统是否表现/体验更好？
   Do people perform or experience better with the system than with a baseline?
@@ -113,7 +109,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 3.3 Group 4 · 专家评审 / 启发式评估 Expert review / heuristic evaluation
 
-![Expert review / heuristic evaluation](assets/05_studydesign-expert-review.jpg)
 
 - **问题**：合格专家是否判断该系统或其产出"可用且恰当"？
   Do qualified experts judge the system or its outputs as usable and appropriate?
@@ -124,7 +119,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 3.4 Group 5 · 田野部署 / 真实场景研究 Field deployment (in-the-wild)
 
-![Field deployment / in-the-wild](assets/06_studydesign-field-deployment.jpg)
 
 - **问题**：系统在真实场景中是否被使用、是否重要——随着时间推移？
   Is the system used, and does it matter, in its real setting over time?
@@ -139,7 +133,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 4.1 半结构化访谈 · Semi-structured interviews
 
-![Semi-structured interviews](assets/07_datacoll-semi-structured-interview.jpg)
 
 - **是什么**：开放式问题＋追问＋留出跟进空间；捕捉行为背后的原因、经验与解读。
   A mix of open questions and probes, with room for follow-ups; captures reasons, experiences and interpretations behind behaviour.
@@ -148,7 +141,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 4.2 刺激性回忆 / 回溯式出声思考 · Stimulated recall / retrospective think-aloud
 
-![Stimulated recall](assets/08_datacoll-stimulated-recall.jpg)
 
 - **是什么**：参与者观看自己活动的录影，说出当时注意到、想到、打算做什么；不打断任务；锚定在具体时刻；但属于"回溯式重建"，并非思维的直接记录。
   Participants watch a recording of their own activity and say what they noticed, thought and intended; does not disrupt the task; anchored in concrete moments; but accounts are retrospective reconstructions, not direct records of thought.
@@ -157,7 +149,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 4.3 标准化问卷 · Standardised questionnaires
 
-![Standardised questionnaires](assets/09_datacoll-standardised-questionnaire.jpg)
 
 - **是什么**：用经过验证的量表，跨参与者一致地测量可用性、工作负荷、信任、亲密度、能动性（agency）或临场感；结果可在不同条件及其他研究间比较。例如 SUS、NASA-TLX、UEQ、Godspeed（机器人感知）。
   Validated scales measure usability, workload, trust, closeness, agency or presence consistently; results comparable across conditions and studies. E.g., SUS, NASA-TLX, UEQ, Godspeed.
@@ -166,7 +157,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 4.4 经验取样（ESM）＋交互日志 · ESM and interaction logging
 
-![ESM + interaction logging](assets/10_datacoll-esm-logging.jpg)
 
 - **是什么**：系统记录带时间戳的事件；ESM 再叠加简短的"当下"提示；既得客观行为，又得贴近发生时刻的主观体验。
   The system logs events with timestamps; ESM adds brief in-the-moment prompts; gives objective behaviour plus experience captured close to when it happens.
@@ -175,7 +165,6 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ### 4.5 视频观察 · Observation (video-recorded)
 
-![Observation (video-recorded)](assets/11_datacoll-observation.jpg)
 
 - **是什么**：用视频观察并记录会话（房间视角/第一人称/屏幕）；保留日志与记忆会漏掉的时机、视线、手势与言语；便于后续做刺激性回忆与行为编码。
   Sessions observed and recorded on video (room / first-person / screen); keeps timing, gaze, gesture and talk that logs and memory miss; enables stimulated recall and behavioural coding later.

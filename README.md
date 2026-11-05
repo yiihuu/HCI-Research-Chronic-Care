@@ -66,8 +66,7 @@ HCI-Research-Chronic-Care/
 │   ├── README.md
 │   ├── concepts.md
 │   ├── research-design.md
-│   ├── interleaf-borrowing.md
-│   └── assets/
+│   └── interleaf-borrowing.md
 ├── 资料/
 │   └── README.md
 ├── prototype/
@@ -89,7 +88,7 @@ HCI-Research-Chronic-Care/
 
 ## 概念笔记与资料库 · Concept Notes & Material Library
 
-- [note/README.md](./note/README.md) · 笔记索引（阅读顺序 / 图片对照）
+- [note/README.md](./note/README.md) · 笔记索引（阅读顺序）
 - [note/research-design.md](./note/research-design.md) · 研究设计与规划（范式 / 12 项决策 / 混合方法 / 基线 / 样本量 / 伦理 / 设计与问题的对齐）
 - [note/concepts.md](./note/concepts.md) · 方法论概念梳理（RTD / 概念验证 / 研究设计 / 数据收集）
 - [note/interleaf-borrowing.md](./note/interleaf-borrowing.md) · InterLeaf 借鉴拆解（本体映射 / scope 选项）

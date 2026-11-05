@@ -1,7 +1,7 @@
 # 研究设计与规划 · Research Design & Planning
 
-> **来源 Source**：CMAA6019 *HCI for Embodied AI*，Week 10「Ethics / Study Design」讲义截图 19 张（有效 17 张），已重命名存入 [`note/assets/`](./assets/)（`rd-01` … `rd-17`）。
-> Lecture screenshots from CMAA6019 *HCI for Embodied AI*, Week 10 "Ethics / Study Design" (19 shots, 17 usable), renamed into [`note/assets/`](./assets/) as `rd-01` … `rd-17`.
+> **来源 Source**：CMAA6019 *HCI for Embodied AI*，Week 10「Ethics / Study Design」课程讲义（19 张截图提炼为本页文字）。
+> Lecture notes from CMAA6019 *HCI for Embodied AI*, Week 10 "Ethics / Study Design" (distilled from 19 lecture screenshots into the text below).
 >
 > **配套 Companion**：[`concepts.md`](./concepts.md) 讲"方法工具箱"（发明型研究三部分 / 研究设计分组 / 数据收集）；本笔记讲**怎么把一项研究设计与规划搭起来**——范式、层级、问题、决策、伦理、对齐。
 > `concepts.md` covers the "methods toolbox" (three parts of inventive research / study-design groups / data collection); this note covers **how to construct and plan a study** — paradigm, levels, questions, decisions, ethics, alignment.
@@ -32,7 +32,6 @@
 
 ## 1. 研究范式 · Research Paradigms
 
-![Research paradigms](assets/rd-15_paradigms.jpg)
 
 | 范式 · Paradigm | 它认为什么算知识 · What counts as knowledge | 典型做法 · Typical move |
 |---|---|---|
@@ -50,7 +49,6 @@
 
 ## 2. 四个层级：范式 → 方法学 → 设计 → 方法 · Paradigm → Methodology → Design → Method
 
-![Paradigm, methodology, design, method](assets/rd-16_paradigm-methodology-design-method.jpg)
 
 ```mermaid
 flowchart LR
@@ -73,7 +71,6 @@ flowchart LR
 
 ## 3. 从题目到研究问题 · From Topic to Research Question
 
-![From topic to research question](assets/rd-08_topic-to-research-question.jpg)
 
 研究问题不是一拍脑袋想出来的，它是**从宽到窄逐层收口**的产物。
 A research question is not improvised; it is the narrow end of a funnel.
@@ -105,7 +102,6 @@ flowchart TD
 
 ## 4. 研究问题 vs 假设 · Research Question vs Hypothesis
 
-![Research questions and hypotheses](assets/rd-09_research-questions-hypotheses.jpg)
 
 | 概念 · Term | 定义 · Definition |
 |---|---|
@@ -131,7 +127,6 @@ flowchart TD
 讲义把"动手之前要想清楚的事"排成 12 项。左列是决策，右列是**你应当产出的东西**。
 The lecture lays out twelve decisions to settle before data collection; the right column is the artifact each should produce.
 
-![Planning decisions 1-6](assets/rd-01_planning-decisions-1-6.jpg)
 
 ### 5.1 决策 1–6 · Decisions 1–6
 
@@ -144,7 +139,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 | 5 | **设计 Design** | 条件、基线、被试内/间、实验室/田野、单次/纵向。<br/>Conditions, baseline, within/between, lab or field, one session or longitudinal. |
 | 6 | **参与者 Participants** | 总体、招募、纳入/排除、样本量与理由。<br/>Population, recruitment, inclusion/exclusion, sample size and justification. |
 
-![Planning decisions 7-12](assets/rd-02_planning-decisions-7-12.jpg)
 
 ### 5.2 决策 7–12 · Decisions 7–12
 
@@ -164,7 +158,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 
 ## 6. 过程的两条规则 · Two Rules for the Process
 
-![Two rules for the process](assets/rd-03_two-rules-process.jpg)
 
 | 规则 · Rule | 内容 · What it says |
 |---|---|
@@ -175,7 +168,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 
 ## 7. 定量、定性与混合 · Quantitative, Qualitative and Mixed
 
-![Quantitative, qualitative and mixed designs](assets/rd-10_quant-qual-mixed.jpg)
 
 | 定量 Quantitative | 混合 Mixed | 定性 Qualitative |
 |---|---|---|
@@ -189,7 +181,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 
 ## 8. 混合方法的三种整合结构 · Three Mixed-Methods Structures
 
-![Mixed methods designs](assets/rd-11_mixed-methods.jpg)
 
 > 定义先行：**混合方法意味着把两条线整合起来，而不是"两种数据都收了"。**
 > Definition first: **mixed methods means integrating the two strands, not merely collecting both.**
@@ -206,7 +197,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 
 ## 9. 被试内 vs 被试间 · Within- vs Between-Subjects
 
-![Within- and between-subjects](assets/rd-12_within-between-subjects.jpg)
 
 | | **被试内 Within-subjects** | **被试间 Between-subjects** |
 |---|---|---|
@@ -222,7 +212,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 
 ## 10. 基线与控制条件 · Baselines and Control Conditions
 
-![Baselines and control conditions](assets/rd-13_baselines-control.jpg)
 
 **为什么必须有 Why you need one**
 
@@ -245,7 +234,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 
 ## 11. HCI 里的样本量 · Sample Sizes in HCI
 
-![Sample sizes in HCI](assets/rd-14_sample-sizes.jpg)
 
 | 数字 · Number | 含义 · Meaning |
 |---|---|
@@ -270,7 +258,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 
 ## 12. 伦理 · Ethics
 
-![Ethics](assets/rd-04_ethics.jpg)
 
 **三级许可 Permission at three levels**
 
@@ -297,7 +284,6 @@ flowchart TD
 
 ### 13.1 两种常见错配 · Two common mismatches
 
-![Two common mismatches](assets/rd-05_two-mismatches.jpg)
 
 | 错配 · Mismatch | 症状 · Symptom | 修法 · Fix |
 |---|---|---|
@@ -309,14 +295,12 @@ flowchart TD
 
 ### 13.2 问题类型 → 设计（原表）· Question type → design
 
-![Question type and design](assets/rd-06_question-type-design.jpg)
 
 见 [§0 速查表](#0-一页速查--one-page-cheat-sheet)（同源，已折算成可读版）。
 See the [§0 cheat sheet](#0-一页速查--one-page-cheat-sheet) — same content, rendered for reading.
 
 ### 13.3 方法按目的分类 · Methods by purpose
 
-![Methods by purpose](assets/rd-07_methods-by-purpose.jpg)
 
 | 层 · Layer | 包含 · Contains |
 |---|---|
@@ -355,7 +339,6 @@ See the [§0 cheat sheet](#0-一页速查--one-page-cheat-sheet) — same conten
 
 ## 15. 伦理争论站 · Debate Stations (A–D)
 
-![Debate stations A-D](assets/rd-17_debate-stations.jpg)
 
 课堂用四个立场做 10 分钟站队辩论。它们不是结论，而是**设计取向的四个张力**——写讨论章时很好用。
 Four positions for a 10-minute standing debate. They are not conclusions but **four tensions in design orientation** — useful for the discussion chapter.
