@@ -66,6 +66,7 @@ HCI-Research-Chronic-Care/
 │   ├── README.md
 │   ├── concepts.md
 │   ├── research-design.md
+│   ├── evaluation-methods.md
 │   └── interleaf-borrowing.md
 ├── 资料/
 │   └── README.md
@@ -92,6 +93,7 @@ HCI-Research-Chronic-Care/
 - [note/research-design.md](./note/research-design.md) · 研究设计与规划（范式 / 12 项决策 / 混合方法 / 基线 / 样本量 / 伦理 / 设计与问题的对齐）
 - [note/concepts.md](./note/concepts.md) · 方法论概念梳理（RTD / 概念验证 / 研究设计 / 数据收集）
 - [note/interleaf-borrowing.md](./note/interleaf-borrowing.md) · InterLeaf 借鉴拆解（本体映射 / scope 选项）
+- [note/evaluation-methods.md](./note/evaluation-methods.md) · POC 评估方法（认知走查四问 / 动作序列 / 记录表 / Nielsen 十条与严重度）
 - [资料/](./资料/) · 待上传的方法论书籍 / PDF（入库前确认无版权与隐私风险）
 
 ## 路线规划 · Roadmap
