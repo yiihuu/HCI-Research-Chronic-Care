@@ -1,7 +1,7 @@
 # 笔记索引 · Note Index
 
-> 方法论笔记库。所有笔记均为**概念梳理**，不是研究正文；涉及本课题的取舍一律标 `📝 TODO（手写）`。
-> A methodology note library. All notes are **concept digests**, not research prose; project-specific choices are marked `📝 TODO（手写）`.
+> 方法论笔记库。所有笔记均为**概念梳理**，不是研究正文；只保留方法与概念本身，简洁清晰、便于查阅。
+> A methodology note library. All notes are **concept digests**, not research prose—methods and concepts only, kept concise and readable.
 
 | 笔记 · Note | 涵盖 · Covers |
 |---|---|

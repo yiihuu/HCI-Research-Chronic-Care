@@ -6,10 +6,10 @@
 > **配套 Companion**：[`concepts.md`](./concepts.md) 讲"方法工具箱"（发明型研究三部分 / 研究设计分组 / 数据收集）；本笔记讲**怎么把一项研究设计与规划搭起来**——范式、层级、问题、决策、伦理、对齐。
 > `concepts.md` covers the "methods toolbox" (three parts of inventive research / study-design groups / data collection); this note covers **how to construct and plan a study** — paradigm, levels, questions, decisions, ethics, alignment.
 >
-> **性质 Nature**：概念梳理，不是研究正文。凡涉及本课题的取舍，一律标 `📝 TODO（手写）`，由维护者定稿。
-> A concept digest, not research prose. Every project-specific choice is marked `📝 TODO（手写）` for the maintainer to settle.
+> **性质 Nature**：概念梳理，不是研究正文；只保留方法与概念本身，简洁清晰、便于查阅。
+> A concept digest, not research prose—methods and concepts only, kept concise and readable.
 
-**怎么读 How to read**：先看 [§0 一页速查](#0-一页速查--one-page-cheat-sheet)；写 proposal 时按 [§5 十二项决策](#5-规划十二项决策--twelve-planning-decisions) 逐项过；改 RQ 措辞前先看 [§13 常见错配](#13-让设计与问题对齐--aligning-design-with-the-question)；与自己课题的连接在 [§14](#14-与本课题的对应--mapping-to-our-project)。
+**怎么读 How to read**：先看 [§0 一页速查](#0-一页速查--one-page-cheat-sheet)；写 proposal 时按 [§5 十二项决策](#5-规划十二项决策--twelve-planning-decisions) 逐项过；改 RQ 措辞前先看 [§13 常见错配](#13-让设计与问题对齐--aligning-design-with-the-question)。
 
 ---
 
@@ -42,8 +42,6 @@
 
 > 讲义原话：多数技术型 HCI 与具身 AI 项目是**实用主义**的——要在 proposal 里把自己的范式写明。
 > The lecture's own line: most technical HCI and embodied-AI projects are **pragmatist** — state your paradigm in the proposal.
-
-📝 TODO（手写）：本课题声明哪种范式？若走"技术 HCI + 具身 AI"，实用主义是默认答案，但需在 `docs/methods.md` §1 写清理由。
 
 ---
 
@@ -96,8 +94,6 @@ flowchart TD
 - **能不能做 Can it be researched?** 访问权限、时间、资源、技能是否具备。<br/>Access, time, resources and skills are available.
 - **该不该做 Should it be researched?** 它是否增加知识或改善实践。<br/>Does it add knowledge or help practice?
 
-📝 TODO（手写）：把我们现在的题目按这四层各写一句，检查"目的陈述"是否真的落在"理解/支持"而不是"造一个系统"。
-
 ---
 
 ## 4. 研究问题 vs 假设 · Research Question vs Hypothesis
@@ -117,8 +113,6 @@ flowchart TD
 |---|---|
 | "教师如何决定何时介入？"<br/>"How do teachers decide when to assist?" | 探索性 → 访谈、观察。<br/>Exploratory → interviews, observation. |
 | "相比无提示，交接提示能否减少反复确认？"<br/>"Does a handoff cue reduce checking compared with no cue?" | 比较性 → 带"无提示对照"的受控实验。<br/>Comparative → controlled experiment with a no-cue control. |
-
-📝 TODO（手写）：逐条检查我们的 RQ 里有没有"更好/更低负担/更愿意"这类比较词。若有，要么补对照条件，要么改成描述性问法。
 
 ---
 
@@ -191,8 +185,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 | **解释性顺序 Explanatory sequential** | QUAN → QUAL | 用定性**解释**定量结果 → Explain the QUAN results |
 | **探索性顺序 Exploratory sequential** | QUAL → QUAN | 用定量**检验**定性发现 → Test the QUAL findings |
 
-📝 TODO（手写）：本课题更像"探索性顺序"——先访谈摸清患者在记录/归因上的障碍，再用问卷或日志检验。确认是否采用，并在 methods 里写明"整合点"落在哪一步。
-
 ---
 
 ## 9. 被试内 vs 被试间 · Within- vs Between-Subjects
@@ -252,8 +244,6 @@ The lecture lays out twelve decisions to settle before data collection; the righ
 > 注意第 4 条与"12 段访谈"的张力：12 是**观察到多数编码出现**的经验数，不是一个可以写进方法章的机械截止线。
 > Note the tension with "12 interviews": 12 is an empirical observation about code coverage, not a mechanical cutoff to cite in your methods chapter.
 
-📝 TODO（手写）：我们的访谈/测试计划里，N 的论证用的是哪一条？如果写"饱和"，按讲义要改成"信息力 / 反身判断"的表述。
-
 ---
 
 ## 12. 伦理 · Ethics
@@ -275,8 +265,6 @@ flowchart TD
 | **影像的多重用途 Video reuse** | 每一种后续用途都要单独同意：编码、刺激性回忆、发表。<br/>Consent for **each** later use: coding, stimulated recall, publication. |
 | **儿童与其他弱势群体 Children / vulnerable groups** | 需要额外保护措施。<br/>Extra safeguards. |
 | **家庭场景的侵入 In-home sensing** | 录制与日志**只限于 RQ 所需**。<br/>Limit recording and logging to what the RQ needs. |
-
-📝 TODO（手写）：IRB 材料里，"影像后续用途"是否逐项写了？家用场景是否写了"最小化采集"条款？
 
 ---
 
@@ -315,29 +303,7 @@ See the [§0 cheat sheet](#0-一页速查--one-page-cheat-sheet) — same conten
 
 ---
 
-## 14. 与本课题的对应 · Mapping to Our Project
-
-> 只列"这张讲义逼我们必须回答的问题"，不替维护者做研究决策。
-> This lists **questions the lecture forces us to answer**, not decisions made on the maintainer's behalf.
-
-| 讲义决策点 · Lecture point | 本课题要回答什么 · What we must answer | 状态 · Status |
-|---|---|---|
-| 范式（§1） | 声明为实用主义？理由写在哪？<br/>Declare pragmatism? Where is the rationale? | 📝 TODO（手写） |
-| 方法学（§7–8） | 定性、定量，还是"探索性顺序"混合？整合点在哪一步？<br/>Qual, quant, or exploratory-sequential mixed? Where is the integration point? | 📝 TODO（手写） |
-| 设计（§9–10） | 被试内还是被试间？有无对照条件（如"常规记录方式"）？<br/>Within or between? Is there a comparison condition (e.g. usual logging)? | 📝 TODO（手写） |
-| 时间跨度（§13.1） | 若要主张"低负担、可持续"，是否必须做多周日记/部署？<br/>To claim "low burden, sustainable", is a multi-week diary/deployment required? | 📝 TODO（手写） |
-| 数据收集（§13.3） | 访谈 + 交互日志 + ESM + 日记，各覆盖哪个 RQ？<br/>Which RQ does each of interview / logging / ESM / diary cover? | 见 [`concepts.md` §4](./concepts.md#4-数据收集方法--data-collection-methods) |
-| 数据分析（§13.3） | 反身主题分析？编码策略与评分者一致性怎么处理？<br/>Reflexive thematic analysis? How are coding and agreement handled? | 见 [`docs/methods.md`](../docs/methods.md) |
-| 样本量（§11） | N 用哪条理由论证？避免写"饱和"。<br/>Which justification for N? Avoid "saturation". | 📝 TODO（手写） |
-| 伦理（§12） | 三级许可是否齐备？录屏/日志是否最小化？<br/>All three permission levels? Is capture minimised? | 📝 TODO（手写，IRB） |
-| 分析计划（§5.2 #9） | 是否在收数据前定死 RQ→分析映射？<br/>Is the RQ→analysis map fixed before collection? | 📝 TODO（手写） |
-
-**一句话 takeaway**：这套讲义真正逼问的是——**你的主张有多大，你的证据就必须有多宽**。主张"低负担、长期、更好"，就得有对照 + 跨时间 + 论证过的 N；只想说"我们做了一个可用的设计探针"，则截图＋小规模测试就够。
-**One-line takeaway**: the deck really asks — **the breadth of your claim sets the breadth of evidence you owe.** Claim "low-burden, long-term, better" and you owe a comparison, a time span, and a justified N; claim only "a usable design probe", and screenshots plus a small test suffice.
-
----
-
-## 15. 伦理争论站 · Debate Stations (A–D)
+## 14. 伦理争论站 · Debate Stations (A–D)
 
 
 课堂用四个立场做 10 分钟站队辩论。它们不是结论，而是**设计取向的四个张力**——写讨论章时很好用。
@@ -355,7 +321,7 @@ Four positions for a 10-minute standing debate. They are not conclusions but **f
 
 ---
 
-## 16. 术语表 · Glossary
+## 15. 术语表 · Glossary
 
 | 术语 · Term | 一句话 · In one line |
 |---|---|
@@ -372,7 +338,7 @@ Four positions for a 10-minute standing debate. They are not conclusions but **f
 
 ---
 
-## 17. 参考文献 · References
+## 16. 参考文献 · References
 
 **来自截图（页码需核对原文）· From the slides (verify page numbers)**
 
@@ -393,11 +359,9 @@ Four positions for a 10-minute standing debate. They are not conclusions but **f
 - *Modern Statistical Methods for HCI*. Springer.
 - 课程内部讲义 · Course deck: CMAA6019 *HCI for Embodied AI*, "Top HCI Methods by Purpose", slide 15.
 
-📝 TODO（手写）：把上述条目并入 [`docs/references.md`](../docs/references.md)，统一成 ACM 格式；补齐 Debate stations 的 Meng / Sharkey 原文与页码。
-
 ---
 
-## 18. 相关笔记 · Related Notes
+## 17. 相关笔记 · Related Notes
 
 - [`concepts.md`](./concepts.md) — 发明型研究三部分、概念来源、健壮性层级、研究设计分组（Group 1/2/4/5）、六种数据收集方法。
 - [`interleaf-borrowing.md`](./interleaf-borrowing.md) — InterLeaf 借鉴拆解、本体映射与 scope 选项。

@@ -3,8 +3,6 @@
 > 来源：TargetCHI/InterLeaf_ A Letter-Based Mobile Platform for Reflection, Connection, and Chronic Pain Support.pdf（CHI EA '26, Barcelona, doi 10.1145/3772363.3798739）
 > Source: TargetCHI/InterLeaf_ A Letter-Based Mobile Platform for Reflection, Connection, and Chronic Pain Support.pdf (CHI EA '26, Barcelona, doi 10.1145/3772363.3798739)
 
-📝 TODO（手写）：本笔记为素材拆解，非研究正文。所选范围、命名与设计取舍由维护者定稿。
-
 ---
 
 ## 1. 原文结构 · Source Structure
@@ -28,8 +26,6 @@
 | 应对 · Coping | pacing, heat, mindfulness, medication, stretching |
 | 情绪 · Emotion | grief, anger, frustration, shame, hope, loneliness |
 
-📝 TODO（手写）：该本体为英文／西方框架，需与本课题的慢性病场景对齐（是否引入睡眠、用药周期、天气、压力、久坐、饮食等；是否需要"弥漫/全身"这类非特异描述）。
-
 ## 3. 维度映射 · Dimension Mapping
 
 | InterLeaf 机制 · Mechanism | InterLeaf 用途 · Their use | 本课题对应 · Our counterpart | 取舍 · Take |
@@ -52,14 +48,3 @@
 | **B. AI 辅助预填层** | 自由／语音短输入 → AI 给候选标签＋置信门控 → 用户点选确认 | 兑现"低负担"；借用 InterLeaf 的置信门控与可编辑建议 | 引入模型依赖与评估负担（需伦理与离线评估） |
 | **C. 社会／共享层** | 匿名聚合的缓解策略库，或同伴 opt-in 1:1 | 借 Grove／Chats，扩大生态 | 隐私与伦理成本高；硕士课题体量风险 |
 | **D. 临床接口层** | 把个人模式图导出给下次门诊 | 接回临床场景 | 与当前"患者端"定位冲突，仅作远期工作 |
-
-📝 TODO（手写）：选定哪几层；每层的优先级与是否在 poster 期内可完成。
-
-## 5. 待决问题 · Open Questions
-
-📝 TODO（手写）：
-- 三段流程的顺序是否固定（感觉 → 触发 → 缓解），还是允许先记触发、事后补缓解？
-- "缓解"是单选、多选，还是带"有效／无效"评分？
-- 标签是固定列表、可自增，还是本地可编辑？
-- 跨发作层的聚合窗口（最近 7 天 / 30 天 / 全部）？
-- 模式呈现形式：时间线、矩阵、热力图、还是文字回顾？

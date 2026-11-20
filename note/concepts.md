@@ -3,13 +3,11 @@
 > 本笔记梳理 HCI 研究方法论的核心概念，来源有二：(1) 一套方法论课程讲义（标注为 PROOF OF CONCEPT / STUDY DESIGN / DATA COLLECTION）；(2) RTD（Research Through Design）相关文献。
 > This note organizes core concepts of HCI research methodology from two sources: (1) a set of methodology lecture slides (tagged PROOF OF CONCEPT / STUDY DESIGN / DATA COLLECTION); (2) literature on Research Through Design (RTD).
 >
-> 目的：把这些"方法工具箱"与我们的课题（患者端慢性病自我管理 + 链接选择交互）对应起来，方便后续写论文方法章与 poster。
-> Purpose: to map this "methods toolbox" onto our own project (patient-side chronic-disease self-management + link-selection interaction), for use in the methods chapter and the poster.
+> 目的：梳理这套"方法工具箱"，方便写论文方法章与 poster 时查阅。
+> Purpose: to organize this "methods toolbox" for reference when writing the methods chapter and poster.
 
 > **相关笔记 Companion**：[`research-design.md`](./research-design.md)（研究范式 / 12 项规划决策 / 设计与问题的错配 / 伦理）· [`README.md`](./README.md)（笔记索引）
 > **Related**: `research-design.md` (paradigms / twelve planning decisions / design–question mismatches / ethics) · `README.md` (note index)
-
-📝 TODO（手写）：本笔记是**可读性优先的梳理**，不是论文正文。后续请把与导师确认后的术语、引用页码、以及我们自己研究的实际选择填进来。
 
 ---
 
@@ -58,8 +56,6 @@
 - **障碍驱动 Roadblock-driven**：直接瞄准阻碍进展的环节，常产出工具类发明。
   Target what blocks progress directly; often produces tools.
 
-📝 TODO（手写）：我们课题的概念来源属于哪一类/哪几类混合？（提示：链接选择既可看作"需求优先"——回应患者难做症状归因；也可看作对"自追踪/个人信息化"已有思路的新用途挖掘，偏 Hybrid。）
-
 ### 2.3 该造多少：健壮性层级 · How much to build — levels of robustness
 
 
@@ -77,8 +73,6 @@
   4. 现场演示 Live demonstration
   5. 用户测试 Testing with users
   6. 独立使用的部署 Deployment for independent use
-
-📝 TODO（手写）：我们当前的 Nomi 暖记 / chronic-recall 原型（活动代号 Constellink）处于哪一层？建议定位于"截图/视频/小规模用户测试"，避免过度工程化。
 
 ---
 
@@ -173,30 +167,7 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 
 ---
 
-## 5. 与本课题的对应 · Mapping to Our Project
-
-> 课题定位（见 `README.md`）：患者端慢性病自我管理中的**链接选择**交互——用户发现症状后，点击判定该症状与情境因子（环境/心情/活动等）的关联。
-> Project framing (see `README.md`): **link-selection** interaction in patient-side chronic-disease self-management—after noticing a symptom, the user taps to judge its link to a contextual factor (environment / mood / activity…).
-
-| 方法 / 设计 · Method | 我们课题的落点 · Where it lands in our project | 当前状态 · Status |
-|---|---|---|
-| 半结构化访谈（§4.1） | RQ1 形成性研究：挖患者归因的需求/障碍/心智模型。我们已录 **3 段访谈**（2026-07-15 / 09-21 / 10-20），**待转写**。 | 📝 TODO（实证）未转写 |
-| 标准化问卷（§4.3） | 预筛选问卷已含 PHQ-8 / GAD-7 / WHO-5、改编 PRMQ（记忆）、TBQ/PETS（治疗负担）。属"基线特征＋心理负荷"测量。 | 已收集，未分析 |
-| 概念验证（§2） | RQ2：链接选择原型 = Nomi 暖记 / chronic-recall（活动代号 **Constellink**）。现处"截图/视频/小规模用户测试"层。 | 原型存在 |
-| 专家评审（§3.3） | 后续可请 HCI/临床专家盲评链接选择界面的恰当性与可用性。 | 待规划 |
-| 田野部署（§3.4） | 远期：把链接选择探针交给患者真实使用数周，用 ESM＋日志看长期归因行为。 | 远期 |
-| 刺激性回忆（§4.2） | 可让用户回看自己在原型中的操作录屏，说出"当时为什么这样连"。 | 可纳入用户测试 |
-| 技术评估（§3.1） | 链接数据模型（症状↔情境节点）的准确率/一致性，可离线验证。 | 视原型而定 |
-
-**建议的论证链（写论文/poster 时用）Suggested argument chain**:
-1. RQ1 用**半结构化访谈＋标准化问卷**做形成性研究，建立"患者难把症状连到情境"的需求与障碍（个人信息化/反思支持的缺口）。
-2. RQ2 用 **RTD 思路＋概念验证**产出链接选择原型——artifact 本身即贡献。
-3. 验证按"克制原则"（§2.3）选层级：先专家评审/小规模用户测试，不急于部署。
-4. 远期再做田野部署（§3.5 对应 §3.4），用 ESM＋日志评估真实世界价值。
-
----
-
-## 6. 参考文献 · References
+## 5. 参考文献 · References
 
 **来自截图（可核对原文页码）· From the slides (verify page numbers against source)**:
 - Mankoff (2014). *Concepts, Values, and Methods for Technical HCI Research*. In *Ways of Knowing in HCI*. （截图 p.339, 356）
@@ -214,5 +185,3 @@ The lecture groups HCI study designs into clusters; this batch covers **Group 1 
 - Zimmerman, J., Stolterman, E., & Forlizzi, J. (2010). *An Analysis and Critique of Research through Design*. In HCI.
 - Fallman, D. (2003, 2008). *Design-oriented Human-Computer Interaction*; *The Interaction Design Research Triangle*.
 - Gaver, B. (2012). *What should we expect from research through design?*
-
-📝 TODO（手写）：把上述引用补全为统一 ACM / BibTeX 格式，并并入 `docs/references.md`。确认讲义的原始出处（课程/教材名）后补入。
